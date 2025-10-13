@@ -355,23 +355,34 @@ function showDashboardPage() {
 }
 
 function showEKYCReportPage() {
-    // Enable dashboard CSS (for base styles) and EKYC summary CSS
+    const allowedEmail = "ravikumar.madatha@tanla.com";
+
+    // Hide all pages and any previous restricted message visibility
+    hideAllPages();
+    document.getElementById('ekycRestrictedMsg').style.display = 'none';
+
+    // Check if current user is allowed
+    if (!currentUser || currentUser.email.toLowerCase() !== allowedEmail) {
+        // Show restricted message for unauthorized users
+        document.getElementById('ekycRestrictedMsg').style.display = 'block';
+
+        // Highlight EKYC menu item
+        setActiveNav('ekycReportNav');
+        return;
+    }
+
+    // Enable styles needed for EKYC page
     document.getElementById('classification-css').disabled = true;
     document.getElementById('dashboard-css').disabled = false;
     document.getElementById('ekyc-summary-css').disabled = false;
-    
-    // Hide all pages first
-    hideAllPages();
-    
-    // Show EKYC report page
+
+    // Show EKYC page and mark nav item active
     document.getElementById('ekycReportPage').style.display = 'block';
-    
-    // Set active navigation
     setActiveNav('ekycReportNav');
-    
-    // Clear any previous results
+
+    // Clear previous classification results
     clearClassificationResults();
-    
+
     console.log('Switched to EKYC Report page');
 }
 
@@ -1074,4 +1085,5 @@ window.handlePhotoUpload = handlePhotoUpload;
 window.deleteProfilePhoto = deleteProfilePhoto;
 window.handleLogout = handleLogout;
 window.toggleSidebar = toggleSidebar;
+
 window.autoAdjustDateTimeSize = autoAdjustDateTimeSize;

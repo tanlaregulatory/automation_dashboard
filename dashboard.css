@@ -1,0 +1,599 @@
+/* DASHBOARD PAGE SPECIFIC STYLES ONLY */
+
+/* Dashboard Container - REDUCED PADDING */
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 1px;
+  max-width: 1400px;
+}
+
+/* COMPACT Panel Styles for Dashboard - REDUCED PADDING */
+.panel {
+  background: #ffffff;
+  border-radius: 3px;
+  padding: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+  margin-bottom: 1px;
+}
+
+/* CENTERED DASHBOARD HEADER WITH TANLA TEAL BACKGROUND & BLACK TEXT */
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+  padding: 4px;
+  border-radius: 3px;
+  background: #7fdad2; /* EXACT TANLA TEAL */
+  text-align: center;
+}
+
+.dashboard-header h2 {
+  color: #000000 !important; /* BLACK TEXT */
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0;
+  text-align: center;
+  flex: 1;
+}
+
+/* UPLOAD BUTTON POSITIONED ON RIGHT - TANLA TEAL WITH WHITE TEXT */
+.dashboard-header .upload-btn {
+  background: #7fdad2; /* EXACT TANLA TEAL */
+  color: #ffffff; /* WHITE TEXT */
+  border: none;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.6rem;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  white-space: nowrap;
+  border: 1px solid #6bc9c1;
+}
+
+.dashboard-header .upload-btn:hover {
+  background: #6bc9c1;
+}
+
+/* COMPACT Stats Container - REDUCED SPACING */
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 2px;
+  margin: 2px 0;
+}
+
+.stat-card {
+  padding: 4px;
+  border-radius: 3px;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  min-height: 35px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.stat-number {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 0;
+  color: #1a237e;
+}
+
+.stat-label {
+  font-size: 0.5rem;
+  color: #666666;
+  font-weight: 600;
+}
+
+/* COMPACT Dashboard Tables - REDUCED SPACING */
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1px 0;
+  background: #ffffff;
+  border-radius: 3px;
+  overflow: hidden;
+  font-size: 0.55rem;
+}
+
+.dashboard-table th {
+  background: #7fdad2; /* EXACT TANLA TEAL */
+  color: #000000; /* BLACK TEXT */
+  padding: 1px 2px;
+  font-weight: 700;
+  font-size: 0.55rem;
+  text-align: center;
+  border: 1px solid #6bc9c1;
+  text-transform: uppercase;
+}
+
+.dashboard-table td {
+  padding: 1px 2px;
+  text-align: center;
+  border: 1px solid #e0e0e0;
+  font-size: 0.55rem;
+  font-weight: 700; /* BOLD NUMBERS */
+  color: #333333;
+}
+
+.dashboard-table tbody tr:hover {
+  background: rgba(127, 218, 210, 0.1);
+}
+
+/* BOLD text for important numbers in tables */
+.dashboard-table .bold-number {
+  font-weight: 700;
+  color: #1a237e;
+  font-size: 0.6rem;
+}
+
+.dashboard-table .summary-row {
+  background: #f5f5f5;
+  font-weight: 700;
+}
+
+.dashboard-table .grand-total {
+  background: #7fdad2;
+  color: #000000;
+  font-weight: 700;
+}
+
+/* CENTERED DASHBOARD CONTROLS - SIDE BY SIDE BUTTONS WITHOUT BOX */
+#dashboardControls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 4px auto;
+  width: fit-content;
+  max-width: 100%;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+/* COPY REPORT BUTTON - COMPACT SIZE */
+.action-btn.secondary {
+  background: #1a237e !important;
+  color: #ffffff !important;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 3px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 120px;
+}
+
+.action-btn.secondary:hover {
+  background: #151f6d !important;
+}
+
+/* EXPORT TO EXCEL BUTTON - COMPACT SIZE */
+.action-btn.primary {
+  background: #7fdad2;
+  color: #ffffff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 3px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 120px;
+}
+
+.action-btn.primary:hover {
+  background: #6bc9c1;
+}
+
+/* COMPACT UPLOAD BUTTON */
+.upload-btn {
+  background: #7fdad2; /* EXACT TANLA TEAL */
+  color: #ffffff; /* WHITE TEXT */
+  border: none;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.6rem;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: 1px solid #6bc9c1;
+}
+
+.upload-btn:hover {
+  background: #6bc9c1;
+}
+
+/* COMPACT MODAL STYLES for Dashboard - TANLA TEAL THEME */
+.modal-overlay {
+  position: fixed;
+  z-index: 10000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  margin: 0.5% auto;
+  padding: 0;
+  border-radius: 4px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  border: 2px solid #7fdad2; /* EXACT TANLA TEAL BORDER */
+}
+
+.modal-header {
+  background: #7fdad2; /* EXACT TANLA TEAL */
+  color: #000000; /* BLACK TEXT */
+  padding: 4px 8px;
+  border-radius: 4px 4px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #000000; /* BLACK TEXT */
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.close-modal {
+  color: #000000; /* BLACK TEXT */
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.close-modal:hover {
+  opacity: 0.7;
+}
+
+.modal-body {
+  padding: 8px;
+}
+
+/* REARRANGED MODAL ACTIONS - GENERATE BUTTON ON TOP */
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid #e0e0e0;
+  align-items: center;
+}
+
+.generate-btn {
+  background: #7fdad2; /* EXACT TANLA TEAL */
+  color: #ffffff; /* WHITE TEXT */
+  border: none;
+  padding: 3px 4px;
+  border-radius: 3px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.65rem;
+  height: 24px;
+  order: 1;
+  border: 1px solid #6bc9c1;
+  min-width: 110px;
+}
+
+.generate-btn:hover:not(:disabled) {
+  background: #6bc9c1;
+}
+
+.generate-btn:disabled {
+  background: #95a5a6;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  background: #95a5a6;
+  color: #ffffff;
+  border: none;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.6rem;
+  height: 22px;
+  order: 2;
+  min-width: 90px;
+}
+
+.cancel-btn:hover {
+  background: #7f8c8d;
+}
+
+.upload-instructions {
+  font-size: 0.5rem;
+  color: #666666;
+  text-align: center;
+  order: 3;
+  margin-top: 2px;
+  width: 100%;
+}
+
+/* ERROR MESSAGE STYLING */
+.error-message {
+  color: #ee8080;
+  font-size: 0.65rem;
+  text-align: center;
+  margin: 2px 0;
+  padding: 2px;
+  background: rgba(238, 128, 128, 0.1);
+  border-radius: 3px;
+  border: 1px solid rgba(238, 128, 128, 0.2);
+  display: none;
+}
+
+.error-message.show {
+  display: block;
+}
+
+/* COMPACT UPLOAD GRID */
+.upload-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.upload-item {
+  background: #fafafa;
+  padding: 4px;
+  border-radius: 3px;
+  border: 1px solid #e0e0e0;
+}
+
+.upload-item h4 {
+  margin-top: 0;
+  margin-bottom: 1px;
+  color: #333333;
+  font-size: 0.7rem;
+  text-align: center;
+  font-weight: 700;
+}
+
+.file-input-wrapper {
+  position: relative;
+  margin-bottom: 1px;
+}
+
+.file-input-wrapper input[type="file"] {
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.file-input-label {
+  display: block;
+  padding: 1px 3px;
+  background: #7fdad2; /* EXACT TANLA TEAL */
+  color: #ffffff; /* WHITE TEXT */
+  border-radius: 3px;
+  text-align: center;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+  font-size: 0.55rem;
+  border: 1px solid #6bc9c1;
+}
+
+.file-input-label:hover {
+  background: #6bc9c1;
+}
+
+.file-status {
+  font-size: 0.5rem;
+  color: #666666;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Dashboard Output */
+#dashboardOutput, #ekycReportOutput {
+  margin-top: 2px;
+}
+
+/* REDUCED GAP BETWEEN DASHBOARD SECTIONS */
+.dashboard-section {
+  margin-bottom: 2px !important;
+}
+
+.dashboard-section:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* COMPACT SUMMARY SECTIONS */
+.summary-section {
+  margin: 2px 0;
+  padding: 4px;
+  background: #ffffff;
+  border-radius: 3px;
+  border: 1px solid #e0e0e0;
+}
+
+.summary-section h3 {
+  color: #1a237e;
+  font-size: 0.7rem;
+  margin-bottom: 2px;
+  padding-bottom: 1px;
+  border-bottom: 1px solid #7fdad2; /* EXACT TANLA TEAL BORDER */
+  font-weight: 700;
+}
+
+/* Responsive Design for Dashboard */
+@media (max-width: 768px) {
+  .container {
+    padding: 1px;
+  }
+  
+  .stats-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+  }
+  
+  .stat-card {
+    padding: 3px;
+    min-height: 30px;
+  }
+  
+  .stat-number {
+    font-size: 12px;
+  }
+  
+  .dashboard-table {
+    font-size: 0.5rem;
+  }
+  
+  .dashboard-table th, 
+  .dashboard-table td {
+    padding: 1px;
+  }
+  
+  #dashboardControls {
+    flex-direction: row;
+    gap: 4px;
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .action-btn.secondary,
+  .action-btn.primary {
+    width: auto;
+    min-width: 100px;
+    justify-content: center;
+  }
+}
+
+/* Loading Spinner - REMOVED COMPLEX ANIMATION */
+.loading-spinner {
+  display: none; /* Hide complex spinner */
+}
+
+/* SIMPLE LOADING TEXT */
+.simple-loading {
+  text-align: center;
+  padding: 15px;
+  color: #2c5aa0;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* REMOVE PAGE SWITCHING EFFECTS */
+#classificationPage,
+#dashboardPage,
+#ekycReportPage {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* HIDDEN MODAL WHEN NOT NEEDED */
+.modal-overlay.hidden {
+  display: none !important;
+}
+
+/* COMPACT TABLE STYLES FOR 30-DAY DATA */
+.compact-table {
+  font-size: 0.55rem !important;
+  margin: 0 !important;
+}
+
+.compact-table th,
+.compact-table td {
+  padding: 1px !important;
+  font-size: 0.55rem !important;
+}
+
+/* BOLD NUMBERS IN TABLES */
+.bold-number {
+  font-weight: 700 !important;
+  color: #1a237e !important;
+  font-size: 0.6rem !important;
+}
+
+/* REDUCE SPACE BETWEEN MONTHLY AND DAILY TABLES */
+.dashboard-table + .dashboard-table {
+  margin-top: 2px !important;
+}
+
+/* COMPACT SUMMARY BOX */
+.summary-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.summary-card {
+  padding: 8px;
+  border-radius: 4px;
+  text-align: center;
+  color: black;
+  background: #7fdad2;
+  min-height: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.summary-number {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.summary-label {
+  font-size: 10px;
+  opacity: 0.9;
+}
+
+/* MINIMAL SPACING FOR DASHBOARD SECTIONS */
+.dashboard-section {
+  margin: 1px 0 !important;
+  padding: 0 !important;
+}
+
+.dashboard-section h3 {
+  margin: 4px 0 !important;
+  padding: 4px !important;
+}

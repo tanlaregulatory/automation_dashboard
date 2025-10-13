@@ -1,0 +1,296 @@
+/* EKYC Summary Specific Styles Only */
+/* This file should only contain styles specific to EKYC summary page */
+
+/* Compact modal styles for EKYC */
+.ekyc-upload-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.ekyc-upload-item {
+  background: #fafafa;
+  padding: 6px;
+  border-radius: 5px;
+  border: 1px solid #e0e0e0;
+}
+
+.ekyc-upload-item h4 {
+  margin: 0 0 4px 0;
+  font-size: 0.85rem;
+  text-align: center;
+  color: #000000; /* BLACK TEXT */
+  font-weight: 700;
+}
+
+.ekyc-file-input-label {
+  display: block;
+  padding: 3px 6px;
+  background: #7fdad2; /* EXACT TANLA TEAL */
+  color: #ffffff; /* WHITE TEXT */
+  border: 1px solid #6bc9c1;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 0.7rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.ekyc-file-input-label:hover {
+  background: #6bc9c1;
+  border-color: #5ab8b0;
+}
+
+.ekyc-file-status {
+  font-size: 0.65rem;
+  color: #666666;
+  text-align: center;
+  font-weight: 600;
+}
+
+.ekyc-file-status.ready {
+  color: #27ae60;
+  font-weight: 700;
+}
+
+.ekyc-generate-btn {
+  padding: 5px 10px;
+  background: #7fdad2; /* EXACT TANLA TEAL */
+  color: #ffffff; /* WHITE TEXT */
+  border: none;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom: 4px;
+  height: 30px;
+  transition: background-color 0.3s ease;
+  border: 1px solid #6bc9c1;
+}
+
+.ekyc-generate-btn:hover:not(:disabled) {
+  background: #6bc9c1;
+  transform: translateY(-1px);
+}
+
+.ekyc-generate-btn:disabled {
+  background: #95a5a6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.ekyc-upload-instructions {
+  font-size: 0.65rem;
+  color: #666666;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.ekyc-upload-instructions.ready {
+  color: #27ae60;
+  font-weight: 700;
+}
+
+/* EKYC Summary Header - TANLA TEAL Background with BLACK Text */
+.ekyc-summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding: 10px;
+  border-radius: 6px;
+  background: #7fdad2; /* EXACT TANLA TEAL */
+  text-align: center;
+  gap: 6px;
+}
+
+.ekyc-summary-header h2 {
+  color: #000000 !important; /* BLACK TEXT */
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0;
+  text-align: center;
+  flex: 1;
+}
+
+/* EKYC Upload Button - TANLA TEAL with WHITE Text */
+.ekyc-summary-header .upload-btn {
+  margin-left: auto;
+  background: #7fdad2; /* EXACT TANLA TEAL */
+  color: #ffffff; /* WHITE TEXT */
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.8rem;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  white-space: nowrap;
+  border: 1px solid #6bc9c1;
+}
+
+.ekyc-summary-header .upload-btn:hover {
+  background: #6bc9c1;
+}
+
+/* EKYC Summary specific table styles */
+.ekyc-summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 6px 0;
+  background: #ffffff;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-size: 0.7rem;
+}
+
+.ekyc-summary-table th {
+  background: #7fdad2; /* EXACT TANLA TEAL */
+  color: #000000; /* BLACK TEXT */
+  padding: 3px 5px;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-align: center;
+  border: 1px solid #6bc9c1;
+  text-transform: uppercase;
+}
+
+.ekyc-summary-table td {
+  padding: 3px 5px;
+  text-align: center;
+  border: 1px solid #e0e0e0;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #333333;
+}
+
+.ekyc-summary-table tbody tr:hover {
+  background: rgba(127, 218, 210, 0.1);
+}
+
+/* EKYC Summary specific controls - SIDE BY SIDE BUTTONS */
+.ekyc-summary-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin: 10px auto;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 5px;
+  border: 1px solid #e0e0e0;
+  width: fit-content;
+  max-width: 100%;
+}
+
+/* COPY REPORT BUTTON - BLUE BACKGROUND WITH WHITE TEXT */
+.ekyc-action-btn.secondary {
+  background: #1a237e !important; /* BLUE BACKGROUND */
+  color: #ffffff !important; /* WHITE TEXT */
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.8rem;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid #151f6d;
+  min-width: 140px;
+}
+
+.ekyc-action-btn.secondary:hover {
+  background: #151f6d !important;
+}
+
+/* EXPORT TO EXCEL BUTTON - TANLA TEAL WITH WHITE TEXT */
+.ekyc-action-btn.primary {
+  background: #7fdad2; /* EXACT TANLA TEAL */
+  color: #ffffff; /* WHITE TEXT */
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.8rem;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid #6bc9c1;
+  min-width: 140px;
+}
+
+.ekyc-action-btn.primary:hover {
+  background: #6bc9c1;
+}
+
+/* EKYC Modal specific styles */
+.ekyc-modal-content {
+  background-color: #ffffff;
+  margin: 1% auto;
+  padding: 0;
+  border-radius: 6px;
+  width: 90%;
+  max-width: 480px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  border: 2px solid #7fdad2; /* EXACT TANLA TEAL BORDER */
+}
+
+.ekyc-modal-header {
+  background: #7fdad2; /* EXACT TANLA TEAL */
+  color: #000000; /* BLACK TEXT */
+  padding: 10px 14px;
+  border-radius: 6px 6px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ekyc-modal-header h3 {
+  margin: 0;
+  color: #000000; /* BLACK TEXT */
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.ekyc-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #e0e0e0;
+  align-items: center;
+}
+
+/* Responsive Design for EKYC Summary */
+@media (max-width: 768px) {
+  .ekyc-summary-controls {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+  
+  .ekyc-action-btn.secondary,
+  .ekyc-action-btn.primary {
+    width: 100%;
+    justify-content: center;
+  }
+}

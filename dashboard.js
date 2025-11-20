@@ -1,10 +1,72 @@
 // Global data storage
 let exactDashboardData = {
     entities: [],
-    tmEntities: [], 
+    tmEntities: [],
     tms: [],
     refunds: []
 };
+
+// ===== FINANCIAL YEAR LOGIC (From EKYC Summary) =====
+function getFinancialYear(date) {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1; // 1-12
+    
+    if (month >= 4) { // April to March
+        return `${year}-${year + 1}`;
+    } else {
+        return `${year - 1}-${year}`;
+    }
+}
+
+function getMonthName(date) {
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return monthNames[date.getMonth()];
+}
+
+// ADDED: Format month key to display name
+function formatExactMonth(monthKey) {
+    if (!monthKey) return 'Unknown Month';
+    
+    try {
+        const [year, month] = monthKey.split('-');
+        const monthNum = parseInt(month, 10);
+        
+        const monthNames = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+        
+        if (monthNum >= 1 && monthNum <= 12) {
+            return `${monthNames[monthNum - 1]} ${year}`;
+        } else {
+            return `${monthKey}`;
+        }
+    } catch (error) {
+        console.error('Error formatting month:', error);
+        return `${monthKey}`;
+    }
+}
+
+function getCurrentFinancialYearMonths() {
+    const currentDate = new Date();
+    const currentFY = getFinancialYear(currentDate);
+    
+    // Get months from April to March for current financial year
+    const months = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
+    const currentMonthIndex = currentDate.getMonth(); // 0-11
+    
+    // Determine which months to show based on current date
+    let monthsToShow = [];
+    if (currentDate.getMonth() >= 3) { // April or later
+        // Show from April to current month
+        monthsToShow = months.slice(0, currentMonthIndex - 2); 
+    } else {
+        // Show from April to March (full year)
+        monthsToShow = months;
+    }
+    
+    return monthsToShow;
+}
 
 // Function to show error popup
 function showErrorPopup(message, duration = 5000) {
@@ -43,7 +105,7 @@ function showErrorPopup(message, duration = 5000) {
     return errorPopup;
 }
 
-    // ===== FILE VALIDATION =====
+// ===== FILE VALIDATION =====
 function validateUploadedFiles() {
     const fileInputs = [
         { id: 'entitiesFileInput', name: 'Entities' },
@@ -262,49 +324,6 @@ function generateAccurateDashboard() {
         });
 }
 
-// Process files with APPROVED ON DATE logic
-function processExactFile(file, type) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-            try {
-                let workbook, jsonData;
-                
-                if (file.name.endsWith('.csv')) {
-                    const csvData = e.target.result;
-                    workbook = XLSX.read(csvData, { type: 'string' });
-                } else {
-                    const data = new Uint8Array(e.target.result);
-                    workbook = XLSX.read(data, { type: 'array' });
-                }
-                
-                const sheet = workbook.Sheets[workbook.SheetNames[0]];
-                jsonData = XLSX.utils.sheet_to_json(sheet);
-                
-                console.log(`📁 ${type}: ${jsonData.length} raw records loaded`);
-                
-                // Process with APPROVED ON DATE logic
-                const processedData = processApprovedOnDateData(jsonData, type);
-                console.log(`✅ ${type}: ${processedData.length} records processed`);
-                
-                resolve({ type, data: processedData });
-                
-            } catch (error) {
-                reject(new Error(`Error processing ${type}: ${error.message}`));
-            }
-        };
-        
-        reader.onerror = () => reject(new Error(`Failed to read ${type} file`));
-        
-        if (file.name.endsWith('.csv')) {
-            reader.readAsText(file, 'utf-8');
-        } else {
-            reader.readAsArrayBuffer(file);
-        }
-    });
-}
-
 // Process data with APPROVED ON DATE logic
 function processApprovedOnDateData(rawData, entityType) {
     console.log(`🔧 Processing ${entityType} with APPROVED ON DATE logic...`);
@@ -476,13 +495,14 @@ function formatDateDDMMYYYY(date) {
     return `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getFullYear()}`;
 }
 
-// Calculate statistics with APPROVED ON DATE logic
+// ===== UPDATED STATISTICS CALCULATION WITH FINANCIAL YEAR =====
 function calculateExactStatistics() {
-    console.log('🔢 Calculating statistics with APPROVED ON DATE logic...');
+    console.log('🔢 Calculating statistics with FINANCIAL YEAR logic...');
     
+    const currentFY = getFinancialYear(new Date());
     const stats = {
         monthlyStats: new Map(),
-        approvalsByMonth: new Map(), // NEW: Approvals by Approved On Date
+        approvalsByMonth: new Map(),
         grandTotals: {
             entities: { received: 0, within24hrs: 0, after24hrs: 0, pending: 0, approvedBySubmission: 0, approvedByApproval: 0 },
             tmEntities: { received: 0, within24hrs: 0, after24hrs: 0, pending: 0, approvedBySubmission: 0, approvedByApproval: 0 },
@@ -492,14 +512,14 @@ function calculateExactStatistics() {
         totalRefunds: 0
     };
 
-    // Process entities, TM-entities, TMS with APPROVED ON DATE logic
+    // Process entities, TM-entities, TMS with FINANCIAL YEAR logic
     ['entities', 'tmEntities', 'tms'].forEach(entityType => {
         const data = exactDashboardData[entityType] || [];
         console.log(`📊 Processing ${entityType}: ${data.length} records`);
         
         data.forEach(record => {
-            // COUNT BY SUBMISSION DATE (for Recv, W24h, A24h, Pend columns)
-            if (record.submissionMonthKey) {
+            // Only process records from current financial year
+            if (record.submissionDate && getFinancialYear(record.submissionDate) === currentFY) {
                 const monthKey = record.submissionMonthKey;
                 
                 // Initialize month entry
@@ -538,8 +558,10 @@ function calculateExactStatistics() {
                 }
             }
             
-            // COUNT BY APPROVAL DATE (for Total Appr columns) - NEW LOGIC
-            if (record.approvalMonthKey && record.isCurrentlyApproved) {
+            // COUNT BY APPROVAL DATE (for Total Appr columns)
+            if (record.approvalMonthKey && record.approvalDate && 
+                getFinancialYear(record.approvalDate) === currentFY && 
+                record.isCurrentlyApproved) {
                 const approvalMonthKey = record.approvalMonthKey;
                 
                 // Initialize approval month entry
@@ -558,12 +580,12 @@ function calculateExactStatistics() {
         });
     });
 
-    // Process refunds with Refund Initiated Date
+    // Process refunds with Refund Initiated Date (Current FY only)
     const refundsData = exactDashboardData.refunds || [];
     console.log(`💰 Processing refunds: ${refundsData.length} records`);
     
     refundsData.forEach(refund => {
-        if (refund.monthKey) {
+        if (refund.monthKey && refund.refundDate && getFinancialYear(refund.refundDate) === currentFY) {
             const count = stats.refundsByMonth.get(refund.monthKey) || 0;
             stats.refundsByMonth.set(refund.monthKey, count + 1);
             stats.totalRefunds++;
@@ -573,7 +595,12 @@ function calculateExactStatistics() {
     return stats;
 }
 
-// Generate exact summary function
+// Helper function to format zero as dash
+function formatZeroAsDash(value) {
+    return value === 0 ? '-' : value.toString();
+}
+
+// ===== UPDATED SUMMARY GENERATION =====
 function generateExactSummary(stats) {
     const totalReceived = stats.grandTotals.entities.received + 
                          stats.grandTotals.tmEntities.received + 
@@ -592,20 +619,20 @@ function generateExactSummary(stats) {
     return `
         <div class="summary-box">
             <div class="summary-card">
-                <div class="summary-number">${totalReceived}</div>
-                <div class="summary-label">Total Reg</div>
+                <div class="summary-number">${formatZeroAsDash(totalReceived)}</div>
+                <div class="summary-label" style="font-weight: 800 !important;">Total Reg</div>
             </div>
             <div class="summary-card">
-                <div class="summary-number">${totalApprovedByApproval}</div>
-                <div class="summary-label">Total Appr</div>
+                <div class="summary-number">${formatZeroAsDash(totalApprovedByApproval)}</div>
+                <div class="summary-label" style="font-weight: 800 !important;">Total Appr</div>
             </div>
             <div class="summary-card">
-                <div class="summary-number">${totalPending}</div>
-                <div class="summary-label">Total Pend</div>
+                <div class="summary-number">${formatZeroAsDash(totalPending)}</div>
+                <div class="summary-label" style="font-weight: 800 !important;">Total Pend</div>
             </div>
             <div class="summary-card">
-                <div class="summary-number">${stats.totalRefunds}</div>
-                <div class="summary-label">Refunded</div>
+                <div class="summary-number">${formatZeroAsDash(stats.totalRefunds)}</div>
+                <div class="summary-label" style="font-weight: 800 !important;">Refunded</div>
             </div>
             <div class="summary-card">
                 <div class="summary-number">${approvalRate}%</div>
@@ -614,32 +641,34 @@ function generateExactSummary(stats) {
         </div>`;   
 }
 
-// Generate exact table function with Tanla colors
+// ===== UPDATED TABLE GENERATION WITH FINANCIAL YEAR =====
 function generateExactTable(stats) {
+    const currentFY = getFinancialYear(new Date());
+    
     return `
-        <div style="overflow-x: auto;">
-            <h3 style="text-align: center; color: black; margin: 4px 0; padding: 8px; background: #7fdad2; border-radius: 6px; font-size: 14px;">
-                📊 EKYC Dashboard Report - Monthly Summary
+        <div class="dashboard-table-container">
+            <h3 style="text-align: center; color: black; margin: 4px 0; padding: 12px; background: #7fdad2; border-radius: 8px; font-size: 1.3rem; font-weight: 800; text-transform: uppercase; border-bottom: 2px solid #6bc9c1;">
+                📊 EKYC Dashboard Report- Financial Year status
             </h3>
             <table id="exactTable" class="dashboard-table">
                 <thead>
                     <tr>
-                        <th rowspan="2" style="padding: 4px 6px;">Month</th>
-                        <th colspan="5" style="padding: 4px 6px;">Entities</th>
-                        <th colspan="5" style="padding: 4px 6px;">TM-Entities</th>
-                        <th colspan="5" style="padding: 4px 6px;">TMS</th>
-                        <th rowspan="2" style="padding: 4px 6px;">Total Reg</th>
-                        <th rowspan="2" style="padding: 4px 6px;">Total Pend</th>
-                        <th rowspan="2" style="padding: 4px 6px;">Refunded</th>
-                        <th rowspan="2" style="padding: 4px 6px;">Total Appr</th>
+                        <th rowspan="2" style="padding: 4px 6px; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important;">Month</th>
+                        <th colspan="5" style="padding: 4px 6px; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important;">Entities</th>
+                        <th colspan="5" style="padding: 4px 6px; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important;">TM-Entities</th>
+                        <th colspan="5" style="padding: 4px 6px; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important;">TMS</th>
+                        <th rowspan="2" style="padding: 4px 6px; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important; font-weight: 800 !important;">Total Reg</th>
+                        <th rowspan="2" style="padding: 4px 6px; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important; font-weight: 800 !important;">Total Pend</th>
+                        <th rowspan="2" style="padding: 4px 6px; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important; font-weight: 800 !important;">Refunded</th>
+                        <th rowspan="2" style="padding: 4px 6px; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important; font-weight: 800 !important;">Total Appr</th>
                     </tr>
                     <tr>
                         ${Array(3).fill().map(() => 
-                            `<th style="padding: 2px 4px; font-size: 0.5rem;">Recv</th>
-                            <th style="padding: 2px 4px; font-size: 0.5rem;">W24h</th>
-                            <th style="padding: 2px 4px; font-size: 0.5rem;">A24h</th>
-                            <th style="padding: 2px 4px; font-size: 0.5rem;">Pend</th>
-                            <th style="padding: 2px 4px; font-size: 0.5rem;">Total Appr</th>`
+                            `<th style="padding: 3px 4px; font-size: 0.65rem; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important;">Recv</th>
+                            <th style="padding: 3px 4px; font-size: 0.65rem; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important;">W24h</th>
+                            <th style="padding: 3px 4px; font-size: 0.65rem; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important;">A24h</th>
+                            <th style="padding: 3px 4px; font-size: 0.65rem; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important;">Pend</th>
+                            <th style="padding: 3px 4px; font-size: 0.65rem; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important;" class="total-cell">Total Appr</th>`
                         ).join('')}
                     </tr>
                 </thead>
@@ -650,20 +679,33 @@ function generateExactTable(stats) {
         </div>`;
 }
 
-// Generate exact table body function with APPROVED ON DATE logic
+// ===== UPDATED TABLE BODY WITH FINANCIAL YEAR MONTHS =====
 function generateExactTableBody(stats) {
     let html = '';
     
-    // Get months sorted
-    const sortedMonths = Array.from(stats.monthlyStats.keys()).sort();
+    // Get financial year months in order (Apr to Mar)
+    const fyMonths = getCurrentFinancialYearMonths();
+    const currentFY = getFinancialYear(new Date());
     
-    // Generate monthly summaries
-    sortedMonths.forEach((monthKey, index) => {
-        const monthData = stats.monthlyStats.get(monthKey);
-        const approvalData = stats.approvalsByMonth.get(monthKey) || { entities: 0, tmEntities: 0, tms: 0 };
-        const monthName = formatExactMonth(monthKey);
+    // Generate monthly summaries for FY months only
+    fyMonths.forEach((monthName, index) => {
+        // Convert month name to month key (e.g., "Apr" -> "2024-04")
+        const monthNum = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(monthName) + 1;
+        let year = currentFY.split('-')[0];
+        if (monthNum >= 4) {
+            year = currentFY.split('-')[0]; // Apr-Dec use first year
+        } else {
+            year = currentFY.split('-')[1]; // Jan-Mar use second year
+        }
+        const monthKey = `${year}-${String(monthNum).padStart(2, '0')}`;
         
-        // Get refunds for this month
+        const monthData = stats.monthlyStats.get(monthKey) || {
+            entities: { received: 0, within24hrs: 0, after24hrs: 0, pending: 0, approvedBySubmission: 0, approvedByApproval: 0 },
+            tmEntities: { received: 0, within24hrs: 0, after24hrs: 0, pending: 0, approvedBySubmission: 0, approvedByApproval: 0 },
+            tms: { received: 0, within24hrs: 0, after24hrs: 0, pending: 0, approvedBySubmission: 0, approvedByApproval: 0 }
+        };
+        
+        const approvalData = stats.approvalsByMonth.get(monthKey) || { entities: 0, tmEntities: 0, tms: 0 };
         const refunds = stats.refundsByMonth.get(monthKey) || 0;
         
         const entities = monthData.entities;
@@ -674,178 +716,162 @@ function generateExactTableBody(stats) {
         const totalPending = entities.pending + tmEntities.pending + tms.pending;
         const totalApprovedByApproval = approvalData.entities + approvalData.tmEntities + approvalData.tms;
 
-        // Alternate between grey and white for rows
-        const rowColor = index % 2 === 0 ? '#f8f8f8' : '#ffffff';
+        // Alternate row colors like EKYC summary
+        const rowColor = index % 2 === 0 ? '#ffffff' : '#f8f9fa';
         
         html += `
             <tr style="background: ${rowColor};">
-                <td style="padding: 3px 4px; text-align: center; font-weight: 600;">${monthName}</td>
+                <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${monthName}</td>
                 
-                <td style="padding: 2px 3px; text-align: center; font-weight: 700;">${entities.received}</td>
-                <td style="padding: 2px 3px; text-align: center; font-weight: 700;">${entities.within24hrs}</td>
-                <td style="padding: 2px 3px; text-align: center; font-weight: 700;">${entities.after24hrs}</td>
-                <td style="padding: 2px 3px; text-align: center; font-weight: 700;">${entities.pending}</td>
-                <td style="padding: 2px 3px; text-align: center; font-weight: 700;">${approvalData.entities}</td>
+                <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(entities.received)}</td>
+                <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(entities.within24hrs)}</td>
+                <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(entities.after24hrs)}</td>
+                <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(entities.pending)}</td>
+                <td style="padding: 3px 4px; text-align: center; font-weight: 800; background: #f8f9fa;" class="total-cell">${formatZeroAsDash(approvalData.entities)}</td>
                 
-                <td style="padding: 2px 3px; text-align: center; font-weight: 700;">${tmEntities.received}</td>
-                <td style="padding: 2px 3px; text-align: center; font-weight: 700;">${tmEntities.within24hrs}</td>
-                <td style="padding: 2px 3px; text-align: center; font-weight: 700;">${tmEntities.after24hrs}</td>
-                <td style="padding: 2px 3px; text-align: center; font-weight: 700;">${tmEntities.pending}</td>
-                <td style="padding: 2px 3px; text-align: center; font-weight: 700;">${approvalData.tmEntities}</td>
+                <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(tmEntities.received)}</td>
+                <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(tmEntities.within24hrs)}</td>
+                <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(tmEntities.after24hrs)}</td>
+                <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(tmEntities.pending)}</td>
+                <td style="padding: 3px 4px; text-align: center; font-weight: 800; background: #f8f9fa;" class="total-cell">${formatZeroAsDash(approvalData.tmEntities)}</td>
                 
-                <td style="padding: 2px 3px; text-align: center; font-weight: 700;">${tms.received}</td>
-                <td style="padding: 2px 3px; text-align: center; font-weight: 700;">${tms.within24hrs}</td>
-                <td style="padding: 2px 3px; text-align: center; font-weight: 700;">${tms.after24hrs}</td>
-                <td style="padding: 2px 3px; text-align: center; font-weight: 700;">${tms.pending}</td>
-                <td style="padding: 2px 3px; text-align: center; font-weight: 700;">${approvalData.tms}</td>
+                <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(tms.received)}</td>
+                <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(tms.within24hrs)}</td>
+                <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(tms.after24hrs)}</td>
+                <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(tms.pending)}</td>
+                <td style="padding: 3px 4px; text-align: center; font-weight: 800; background: #f8f9fa;" class="total-cell">${formatZeroAsDash(approvalData.tms)}</td>
                 
-                <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${totalReceived}</td>
-                <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${totalPending}</td>
-                <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${refunds}</td>
-                <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${totalApprovedByApproval}</td>
+                <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(totalReceived)}</td>
+                <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(totalPending)}</td>
+                <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(refunds)}</td>
+                <td style="padding: 3px 4px; text-align: center; font-weight: 800; background: #f8f9fa;" class="total-cell">${formatZeroAsDash(totalApprovedByApproval)}</td>
             </tr>`;
     });
     
-    // Grand total row
+    // Grand total row - MATCHING EKYC SUMMARY STYLE
     const grandTotalReceived = stats.grandTotals.entities.received + stats.grandTotals.tmEntities.received + stats.grandTotals.tms.received;
     const grandTotalPending = stats.grandTotals.entities.pending + stats.grandTotals.tmEntities.pending + stats.grandTotals.tms.pending;
     const grandTotalApprovedByApproval = stats.grandTotals.entities.approvedByApproval + stats.grandTotals.tmEntities.approvedByApproval + stats.grandTotals.tms.approvedByApproval;
     
     html += `
-        <tr style="background: #b8e8e4; font-weight: bold;">
-            <td style="padding: 3px 4px; text-align: center;">Grand Total</td>
+        <tr class="total-row">
+            <td style="padding: 3px 4px; text-align: center; font-weight: 800;">Total</td>
             
-            <td style="padding: 2px 3px; text-align: center;">${stats.grandTotals.entities.received}</td>
-            <td style="padding: 2px 3px; text-align: center;">${stats.grandTotals.entities.within24hrs}</td>
-            <td style="padding: 2px 3px; text-align: center;">${stats.grandTotals.entities.after24hrs}</td>
-            <td style="padding: 2px 3px; text-align: center;">${stats.grandTotals.entities.pending}</td>
-            <td style="padding: 2px 3px; text-align: center;">${stats.grandTotals.entities.approvedByApproval}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 800;">${formatZeroAsDash(stats.grandTotals.entities.received)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 800;">${formatZeroAsDash(stats.grandTotals.entities.within24hrs)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 800;">${formatZeroAsDash(stats.grandTotals.entities.after24hrs)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 800;">${formatZeroAsDash(stats.grandTotals.entities.pending)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 800; background: #f8f9fa;" class="total-cell">${formatZeroAsDash(stats.grandTotals.entities.approvedByApproval)}</td>
             
-            <td style="padding: 2px 3px; text-align: center;">${stats.grandTotals.tmEntities.received}</td>
-            <td style="padding: 2px 3px; text-align: center;">${stats.grandTotals.tmEntities.within24hrs}</td>
-            <td style="padding: 2px 3px; text-align: center;">${stats.grandTotals.tmEntities.after24hrs}</td>
-            <td style="padding: 2px 3px; text-align: center;">${stats.grandTotals.tmEntities.pending}</td>
-            <td style="padding: 2px 3px; text-align: center;">${stats.grandTotals.tmEntities.approvedByApproval}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 800;">${formatZeroAsDash(stats.grandTotals.tmEntities.received)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 800;">${formatZeroAsDash(stats.grandTotals.tmEntities.within24hrs)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 800;">${formatZeroAsDash(stats.grandTotals.tmEntities.after24hrs)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 800;">${formatZeroAsDash(stats.grandTotals.tmEntities.pending)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 800; background: #f8f9fa;" class="total-cell">${formatZeroAsDash(stats.grandTotals.tmEntities.approvedByApproval)}</td>
             
-            <td style="padding: 2px 3px; text-align: center;">${stats.grandTotals.tms.received}</td>
-            <td style="padding: 2px 3px; text-align: center;">${stats.grandTotals.tms.within24hrs}</td>
-            <td style="padding: 2px 3px; text-align: center;">${stats.grandTotals.tms.after24hrs}</td>
-            <td style="padding: 2px 3px; text-align: center;">${stats.grandTotals.tms.pending}</td>
-            <td style="padding: 2px 3px; text-align: center;">${stats.grandTotals.tms.approvedByApproval}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 800;">${formatZeroAsDash(stats.grandTotals.tms.received)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 800;">${formatZeroAsDash(stats.grandTotals.tms.within24hrs)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 800;">${formatZeroAsDash(stats.grandTotals.tms.after24hrs)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 800;">${formatZeroAsDash(stats.grandTotals.tms.pending)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 800; background: #f8f9fa;" class="total-cell">${formatZeroAsDash(stats.grandTotals.tms.approvedByApproval)}</td>
             
-            <td style="padding: 3px 4px; text-align: center;">${grandTotalReceived}</td>
-            <td style="padding: 3px 4px; text-align: center;">${grandTotalPending}</td>
-            <td style="padding: 3px 4px; text-align: center;">${stats.totalRefunds}</td>
-            <td style="padding: 3px 4px; text-align: center;">${grandTotalApprovedByApproval}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 800;">${formatZeroAsDash(grandTotalReceived)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 800;">${formatZeroAsDash(grandTotalPending)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 800;">${formatZeroAsDash(stats.totalRefunds)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 800; background: #f8f9fa;" class="total-cell">${formatZeroAsDash(grandTotalApprovedByApproval)}</td>
         </tr>`;
     
     return html;
 }
 
-// Utility function for month formatting
-function formatExactMonth(monthKey) {
-    const [year, month] = monthKey.split('-');
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return `${monthNames[parseInt(month) - 1]}'${year.substring(2)}`;
-}
-
-// DAILY BREAKDOWN with APPROVED ON DATE logic
+// ===== UPDATED DAILY BREAKDOWN WITH CURRENT MONTH ONLY =====
 function calculateDailyStatistics() {
-    console.log('📅 Calculating daily breakdown with APPROVED ON DATE logic...');
+    console.log('📅 Calculating daily breakdown for CURRENT MONTH only...');
 
-    const currentMonth = getCurrentMonthFromData();
-    console.log('📊 Current month from data:', currentMonth);
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth() + 1;
+    const currentYear = currentDate.getFullYear();
+    const currentDay = currentDate.getDate();
+    
+    // Only show current month (no future dates)
+    const currentMonthKey = `${currentYear}-${String(currentMonth).padStart(2, '0')}`;
 
     const dailyStats = {
         entities: new Map(),
         tmEntities: new Map(),
         tms: new Map(),
-        approvalsByDay: new Map() // NEW: Approvals by Approved On Date
+        approvalsByDay: new Map()
     };
 
-    // Process each entity type for daily counts
+    // Process each entity type for daily counts (CURRENT MONTH ONLY)
     ['entities', 'tmEntities', 'tms'].forEach(entityType => {
         const data = exactDashboardData[entityType] || [];
 
         data.forEach(record => {
-            // COUNT BY SUBMISSION DATE (for Recv, W24h, A24h, Pend columns)
-            if (record.submissionDateKey && record.submissionMonthKey === currentMonth) {
+            // Only process records from current month
+            if (record.submissionDateKey && record.submissionMonthKey === currentMonthKey) {
                 const dateKey = record.submissionDateKey;
-
-                // Initialize day entry if not exists
-                if (!dailyStats[entityType].has(dateKey)) {
-                    dailyStats[entityType].set(dateKey, {
-                        received: 0,
-                        within24hrs: 0,
-                        after24hrs: 0,
-                        pending: 0
-                    });
-                }
-
-                const dayData = dailyStats[entityType].get(dateKey);
-
-                // Count received (by submission date)
-                dayData.received++;
-
-                // Count pending (by submission date)
-                if (record.isCurrentlyPending) {
-                    dayData.pending++;
-                }
-
-                // Count 24-hour timing (by submission date)
-                if (record.isCurrentlyApproved) {
-                    if (record.within24hrs) dayData.within24hrs++;
-                    if (record.after24hrs) dayData.after24hrs++;
-                }
-            }
-
-            // COUNT BY APPROVAL DATE (for Total Appr columns) - NEW LOGIC
-            if (record.approvalDateKey && record.approvalMonthKey === currentMonth && record.isCurrentlyApproved) {
-                const approvalDateKey = record.approvalDateKey;
-
-                // Initialize approval day entry if not exists
-                if (!dailyStats.approvalsByDay.has(approvalDateKey)) {
-                    dailyStats.approvalsByDay.set(approvalDateKey, {
-                        entities: 0,
-                        tmEntities: 0,
-                        tms: 0
-                    });
-                }
-
-                // Count approved by approval date
-                dailyStats.approvalsByDay.get(approvalDateKey)[entityType]++;
-            }
-        });
-    });
-
-    // Determine max day for current month
-    const daysInData = [];
-    ['entities','tmEntities','tms'].forEach(type => {
-        dailyStats[type].forEach((v, dateKey) => {
-            if (dateKey && dateKey.startsWith(currentMonth)) {
                 const dayNum = parseInt(dateKey.split('-')[2], 10);
-                if (!isNaN(dayNum)) daysInData.push(dayNum);
+                
+                // Only include past days, no current or future dates (day-1)
+                if (dayNum < currentDay) {
+                    // Initialize day entry if not exists
+                    if (!dailyStats[entityType].has(dateKey)) {
+                        dailyStats[entityType].set(dateKey, {
+                            received: 0,
+                            within24hrs: 0,
+                            after24hrs: 0,
+                            pending: 0
+                        });
+                    }
+
+                    const dayData = dailyStats[entityType].get(dateKey);
+
+                    // Count received (by submission date)
+                    dayData.received++;
+
+                    // Count pending (by submission date)
+                    if (record.isCurrentlyPending) {
+                        dayData.pending++;
+                    }
+
+                    // Count 24-hour timing (by submission date)
+                    if (record.isCurrentlyApproved) {
+                        if (record.within24hrs) dayData.within24hrs++;
+                        if (record.after24hrs) dayData.after24hrs++;
+                    }
+                }
+            }
+
+            // COUNT BY APPROVAL DATE (for Total Appr columns) - CURRENT MONTH ONLY
+            if (record.approvalDateKey && record.approvalMonthKey === currentMonthKey && 
+                record.isCurrentlyApproved) {
+                const approvalDateKey = record.approvalDateKey;
+                const dayNum = parseInt(approvalDateKey.split('-')[2], 10);
+                
+                // Only include past days, no current or future dates (day-1)
+                if (dayNum < currentDay) {
+                    // Initialize approval day entry if not exists
+                    if (!dailyStats.approvalsByDay.has(approvalDateKey)) {
+                        dailyStats.approvalsByDay.set(approvalDateKey, {
+                            entities: 0,
+                            tmEntities: 0,
+                            tms: 0
+                        });
+                    }
+
+                    // Count approved by approval date
+                    dailyStats.approvalsByDay.get(approvalDateKey)[entityType]++;
+                }
             }
         });
     });
 
-    const latestDayInData = daysInData.length ? Math.max(...daysInData) : 0;
-    const now = new Date();
-    const systemMonthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-    const yesterday = now.getDate() - 1;
-
-    let maxDay;
-    if (currentMonth === systemMonthKey) {
-        maxDay = Math.min(latestDayInData, yesterday);
-        if (maxDay === 0) maxDay = yesterday;
-    } else {
-        maxDay = latestDayInData;
-    }
-
-    // Ensure day entries exist for all days 1..maxDay
-    for (let d = 1; d <= maxDay; d++) {
-        const dd = String(d).padStart(2,'0');
-        const dateKey = `${currentMonth}-${dd}`;
+    // Create entries for all days up to day-1 (even if no data)
+    for (let d = 1; d < currentDay; d++) {
+        const dd = String(d).padStart(2, '0');
+        const dateKey = `${currentMonthKey}-${dd}`;
+        
         ['entities','tmEntities','tms'].forEach(type => {
             if (!dailyStats[type].has(dateKey)) {
                 dailyStats[type].set(dateKey, {
@@ -856,6 +882,7 @@ function calculateDailyStatistics() {
                 });
             }
         });
+        
         // Ensure approval entries exist
         if (!dailyStats.approvalsByDay.has(dateKey)) {
             dailyStats.approvalsByDay.set(dateKey, {
@@ -866,10 +893,11 @@ function calculateDailyStatistics() {
         }
     }
 
-    console.log('✅ Daily breakdown calculated with APPROVED ON DATE logic');
-    return { dailyStats, currentMonth };
+    console.log('✅ Daily breakdown calculated for current month only (day-1 data)');
+    return { dailyStats, currentMonth: currentMonthKey };
 }
 
+// Updated daily breakdown to show "-" for zeros
 function generateDailyBreakdown(stats) {
     const { dailyStats, currentMonth } = calculateDailyStatistics();
 
@@ -884,34 +912,34 @@ function generateDailyBreakdown(stats) {
 
    if (sortedDates.length === 0) {
         return `<div style="margin: 8px 0; padding: 8px; background: #fff3cd; border-radius: 4px; border: 1px solid #ffeaa7; font-size: 0.6rem;">
-            No daily data available for current month (${formatExactMonth(currentMonth)}).
+            No daily data available for current month (${getMonthName(new Date())}).
         </div>`;
     }
 
      let html = `
-<div style="overflow-x: auto; margin-top: 8px;">
-    <h3 style="text-align: center; color: black; margin: 4px 0; padding: 6px; background: #7fdad2; border-radius: 6px; font-size: 12px;">
+<div class="dashboard-table-container" style="margin-top: 8px;">
+    <h3 style="text-align: center; color: black; margin: 4px 0; padding: 12px; background: #7fdad2; border-radius: 8px; font-size: 1.3rem; font-weight: 800; text-transform: uppercase; border-bottom: 2px solid #6bc9c1;">
         📊 Daily Breakdown - ${formatExactMonth(currentMonth)}
     </h3>
     <table class="dashboard-table">
-        <thead>
+                <thead>
             <tr>
-                <th rowspan="2" style="padding: 3px 4px;">Date</th>
-                <th colspan="5" style="padding: 3px 4px;">Entities</th>
-                <th colspan="5" style="padding: 3px 4px;">TM-Entities</th>
-                <th colspan="5" style="padding: 3px 4px;">TMS</th>
-                <th rowspan="2" style="padding: 3px 4px;">Total Reg</th>
-                <th rowspan="2" style="padding: 3px 4px;">Total Pend</th>
-                <th rowspan="2" style="padding: 3px 4px;">Refunded</th>
-                <th rowspan="2" style="padding: 3px 4px;">Total Appr</th>
+                <th rowspan="2" style="padding: 4px 6px; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important;">Date</th>
+                <th colspan="5" style="padding: 4px 6px; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important;">Entities</th>
+                <th colspan="5" style="padding: 4px 6px; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important;">TM-Entities</th>
+                <th colspan="5" style="padding: 4px 6px; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important;">TMS</th>
+                <th rowspan="2" style="padding: 4px 6px; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important; font-weight: 800 !important;">Total Reg</th>
+                <th rowspan="2" style="padding: 4px 6px; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important; font-weight: 800 !important;">Total Pend</th>
+                <th rowspan="2" style="padding: 4px 6px; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important; font-weight: 800 !important;">Refunded</th>
+                <th rowspan="2" style="padding: 4px 6px; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important; font-weight: 800 !important;">Total Appr</th>
             </tr>
             <tr>
                 ${Array(3).fill().map(() => 
-                    `<th style="padding: 1px 2px; font-size: 0.5rem;">Recv</th>
-                     <th style="padding: 1px 2px; font-size: 0.5rem;">W24h</th>
-                     <th style="padding: 1px 2px; font-size: 0.5rem;">A24h</th>
-                     <th style="padding: 1px 2px; font-size: 0.5rem;">Pend</th>
-                     <th style="padding: 1px 2px; font-size: 0.5rem;">Total Appr</th>`).join('')}
+                    `<th style="padding: 3px 4px; font-size: 0.65rem; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important;">Recv</th>
+                     <th style="padding: 3px 4px; font-size: 0.65rem; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important;">W24h</th>
+                     <th style="padding: 3px 4px; font-size: 0.65rem; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important;">A24h</th>
+                     <th style="padding: 3px 4px; font-size: 0.65rem; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important;">Pend</th>
+                     <th style="padding: 3px 4px; font-size: 0.65rem; background: #7fdad2 !important; color: #000000 !important; border: 1px solid #6bc9c1 !important;" class="total-cell">Total Appr</th>`).join('')}
             </tr>
         </thead>
         <tbody>`;
@@ -930,34 +958,34 @@ sortedDates.forEach((date, index) => {
     const formattedDate = formatDateDDMMYYYY(dateObj);
 
     // Alternate between grey and white for rows
-    const rowColor = index % 2 === 0 ? '#f8f8f8' : '#ffffff';
+    const rowColor = index % 2 === 0 ? '#ffffff' : '#f8f9fa';
 
     html += `
         <tr style="background: ${rowColor};">
-            <td style="padding: 2px 3px; text-align: center; font-weight: 600;">${formattedDate}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formattedDate}</td>
 
-            <td style="padding: 1px 2px; text-align: center; font-weight: 700;">${entitiesData.received}</td>
-            <td style="padding: 1px 2px; text-align: center; font-weight: 700;">${entitiesData.within24hrs}</td>
-            <td style="padding: 1px 2px; text-align: center; font-weight: 700;">${entitiesData.after24hrs}</td>
-            <td style="padding: 1px 2px; text-align: center; font-weight: 700;">${entitiesData.pending}</td>
-            <td style="padding: 1px 2px; text-align: center; font-weight: 700;">${approvalData.entities}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(entitiesData.received)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(entitiesData.within24hrs)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(entitiesData.after24hrs)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(entitiesData.pending)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 800; background: #f8f9fa;" class="total-cell">${formatZeroAsDash(approvalData.entities)}</td>
 
-            <td style="padding: 1px 2px; text-align: center; font-weight: 700;">${tmEntitiesData.received}</td>
-            <td style="padding: 1px 2px; text-align: center; font-weight: 700;">${tmEntitiesData.within24hrs}</td>
-            <td style="padding: 1px 2px; text-align: center; font-weight: 700;">${tmEntitiesData.after24hrs}</td>
-            <td style="padding: 1px 2px; text-align: center; font-weight: 700;">${tmEntitiesData.pending}</td>
-            <td style="padding: 1px 2px; text-align: center; font-weight: 700;">${approvalData.tmEntities}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(tmEntitiesData.received)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(tmEntitiesData.within24hrs)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(tmEntitiesData.after24hrs)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(tmEntitiesData.pending)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 800; background: #f8f9fa;" class="total-cell">${formatZeroAsDash(approvalData.tmEntities)}</td>
 
-            <td style="padding: 1px 2px; text-align: center; font-weight: 700;">${tmsData.received}</td>
-            <td style="padding: 1px 2px; text-align: center; font-weight: 700;">${tmsData.within24hrs}</td>
-            <td style="padding: 1px 2px; text-align: center; font-weight: 700;">${tmsData.after24hrs}</td>
-            <td style="padding: 1px 2px; text-align: center; font-weight: 700;">${tmsData.pending}</td>
-            <td style="padding: 1px 2px; text-align: center; font-weight: 700;">${approvalData.tms}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(tmsData.received)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(tmsData.within24hrs)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(tmsData.after24hrs)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(tmsData.pending)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 800; background: #f8f9fa;" class="total-cell">${formatZeroAsDash(approvalData.tms)}</td>
 
-            <td style="padding: 2px 3px; text-align: center; font-weight: 700;">${totalReceived}</td>
-            <td style="padding: 2px 3px; text-align: center; font-weight: 700;">${totalPending}</td>
-            <td style="padding: 2px 3px; text-align: center; font-weight: 700;">0</td>
-            <td style="padding: 2px 3px; text-align: center; font-weight: 700;">${totalApprovedByApproval}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(totalReceived)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 700;">${formatZeroAsDash(totalPending)}</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 700;">-</td>
+            <td style="padding: 3px 4px; text-align: center; font-weight: 800; background: #f8f9fa;" class="total-cell">${formatZeroAsDash(totalApprovedByApproval)}</td>
         </tr>`;
     });
 
@@ -973,7 +1001,7 @@ function generateExactDashboard(output) {
         <div style="margin-top: 20px;">
             ${generateExactSummary(stats)}
             ${generateExactTable(stats)}
-             ${generateDailyBreakdown(stats)}
+            ${generateDailyBreakdown(stats)}
         </div>`;
     
     output.innerHTML = dashboardHTML;
@@ -981,9 +1009,8 @@ function generateExactDashboard(output) {
     // Store for export
     window.exactDashboardStats = stats;
     
-    // Show the external controls
-    document.getElementById('dashboardControls').style.display = 'block';
-   
+    // Show the external controls with centered layout
+    showDashboardControls();
 }
 
 // Get current month from data
@@ -1012,16 +1039,36 @@ function getCurrentMonthFromData() {
 function copyDashboardToClipboard() {
     const dashboardElement = document.getElementById('dashboardOutput');
     
-    html2canvas(dashboardElement).then(canvas => {
+    // Use higher scale and quality settings
+    html2canvas(dashboardElement, {
+        scale: 4, // Higher scale for better quality
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: '#ffffff',
+        logging: false,
+        width: dashboardElement.scrollWidth,
+        height: dashboardElement.scrollHeight,
+        windowWidth: dashboardElement.scrollWidth,
+        windowHeight: dashboardElement.scrollHeight,
+        onclone: function(clonedDoc) {
+            // Ensure all styles are applied in the clone
+            const clonedElement = clonedDoc.getElementById('dashboardOutput');
+            if (clonedElement) {
+                clonedElement.style.width = '100%';
+                clonedElement.style.height = 'auto';
+            }
+        }
+    }).then(canvas => {
+        // Convert to blob with high quality
         canvas.toBlob(blob => {
             const item = new ClipboardItem({ 'image/png': blob });
             navigator.clipboard.write([item]).then(() => {
-                alert('✅ Dashboard copied to clipboard! You can now paste it directly into PowerPoint or other applications.');
+                alert('✅ Copied to clipboard!');
             }).catch(err => {
                 console.error('Copy failed:', err);
                 alert('❌ Failed to copy dashboard. Please try again or take a screenshot manually.');
             });
-        });
+        }, 'image/png', 1.0); // Maximum quality
     });
 }
 
@@ -1138,7 +1185,7 @@ function generateDashboardSummaryData(stats) {
         const monthData = stats.monthlyStats.get(monthKey);
         const approvalData = stats.approvalsByMonth.get(monthKey) || { entities: 0, tmEntities: 0, tms: 0 };
         const refunds = stats.refundsByMonth.get(monthKey) || 0;
-        const monthName = formatExactMonth(monthKey);
+        const monthName = getMonthName(new Date(monthKey + '-01'));
         
         const entities = monthData.entities;
         const tmEntities = monthData.tmEntities;
@@ -1183,7 +1230,7 @@ function generateDailyBreakdownData() {
     
     // Title
     data.push(['EKYCDashboard - Daily Breakdown Report']);
-    data.push(['Month:', formatExactMonth(currentMonth)]);
+    data.push(['Month:', getMonthName(new Date(currentMonth + '-01'))]);
     data.push(['Generated on:', new Date().toLocaleString()]);
     data.push([]);
     
@@ -1262,3 +1309,44 @@ function extractCurrentYearData(rawData, dataType) {
     return currentYearData;
 }
 
+// Check files uploaded function
+function checkFilesUploaded() {
+    const entitiesFile = document.getElementById('entitiesFileInput')?.files.length > 0;
+    const tmEntitiesFile = document.getElementById('tmEntitiesFileInput')?.files.length > 0;
+    const tmsFile = document.getElementById('tmsFileInput')?.files.length > 0;
+    
+    const generateBtn = document.getElementById('generateDashboardBtn');
+    const instructions = document.getElementById('uploadInstructions');
+    
+    if (entitiesFile && tmEntitiesFile && tmsFile) {
+        generateBtn.disabled = false;
+        generateBtn.style.background = '#27ae60';
+        instructions.innerHTML = 'All required files uploaded';
+        instructions.style.color = '#27ae60';
+    } else {
+        generateBtn.disabled = true;
+        generateBtn.style.background = '#95a5a6';
+        instructions.innerHTML = 'Upload Entities, TM-Entities, and TMS files to generate dashboard';
+        instructions.style.color = '#666';
+    }
+}
+
+// Close modal function
+function closeKycUploadModal() {
+    const modal = document.getElementById('kycUploadModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Function to show dashboard controls with centered buttons
+function showDashboardControls() {
+    const controls = document.getElementById('dashboardControls');
+    if (controls) {
+        controls.style.display = 'flex'; // Use flex for centering
+        controls.style.justifyContent = 'center';
+        controls.style.alignItems = 'center';
+        controls.style.gap = '20px';
+        controls.style.flexWrap = 'wrap';
+    }
+}

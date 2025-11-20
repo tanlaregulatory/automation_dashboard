@@ -1,6 +1,7 @@
-/* DASHBOARD PAGE SPECIFIC STYLES ONLY */
+/* DASHBOARD PAGE SPECIFIC STYLES ONLY - MATCHING EKYC SUMMARY STYLING */
+/* This file should only contain styles specific to dashboard page */
 
-/* Dashboard Container - REDUCED PADDING */
+/* Dashboard Container - MATCHING EKYC SUMMARY */
 .container {
   width: 100%;
   margin: 0 auto;
@@ -8,227 +9,442 @@
   max-width: 1400px;
 }
 
-/* COMPACT Panel Styles for Dashboard - REDUCED PADDING */
+/* EKYC SUMMARY STYLE Panel Styles */
 .panel {
   background: #ffffff;
-  border-radius: 3px;
-  padding: 4px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e0e0e0;
-  margin-bottom: 1px;
+  border-radius: 8px;
+  padding: 8px 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 2px solid #7fdad2;
+  margin-bottom: 10px;
+  overflow: hidden;
 }
 
-/* CENTERED DASHBOARD HEADER WITH TANLA TEAL BACKGROUND & BLACK TEXT */
+/* DASHBOARD HEADER - MATCHING EKYC SUMMARY */
 .dashboard-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 2px;
-  padding: 4px;
-  border-radius: 3px;
-  background: #7fdad2; /* EXACT TANLA TEAL */
+  margin-bottom: 8px;
+  padding: 12px 20px;
   text-align: center;
+  background: #7fdad2;
+  border-bottom: 2px solid #6bc9c1;
 }
 
 .dashboard-header h2 {
-  color: #000000 !important; /* BLACK TEXT */
-  font-size: 0.9rem;
-  font-weight: 700;
+  color: #000000 !important;
+  font-size: 1.3rem !important;
+  font-weight: 800 !important;
   margin: 0;
-  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   flex: 1;
 }
 
-/* UPLOAD BUTTON POSITIONED ON RIGHT - TANLA TEAL WITH WHITE TEXT */
+/* UPLOAD BUTTON - MATCHING EKYC SUMMARY STYLE */
 .dashboard-header .upload-btn {
-  background: #7fdad2; /* EXACT TANLA TEAL */
-  color: #ffffff; /* WHITE TEXT */
+  background: #7fdad2 !important;
+  color: #000000 !important;
   border: none;
-  padding: 2px 4px;
-  border-radius: 3px;
-  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 700 !important;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-size: 0.6rem;
-  height: 18px;
-  display: flex;
+  font-size: 0.9rem;
+  height: 35px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 5px;
   white-space: nowrap;
-  border: 1px solid #6bc9c1;
+  border: 2px solid #6bc9c1 !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: background-color 0.3s ease;
 }
 
 .dashboard-header .upload-btn:hover {
-  background: #6bc9c1;
+  background: #6bc9c1 !important;
+  transform: translateY(-1px);
 }
 
-/* COMPACT Stats Container - REDUCED SPACING */
+/* Stats Container - MATCHING EKYC SUMMARY */
 .stats-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-  gap: 2px;
-  margin: 2px 0;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 15px 0;
+  padding: 15px;
 }
 
 .stat-card {
-  padding: 4px;
-  border-radius: 3px;
+  background: #7fdad2 !important; /* TEAL BACKGROUND LIKE EKYC */
+  padding: 15px !important;
+  border-radius: 8px !important;
   text-align: center;
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
-  min-height: 35px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border: 2px solid #6bc9c1 !important;
+  min-height: 60px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
 .stat-number {
-  font-size: 14px;
-  font-weight: 700;
-  margin-bottom: 0;
-  color: #1a237e;
+  font-size: 1.5rem !important;
+  font-weight: 800 !important; /* BOLD LIKE EKYC */
+  color: #000000 !important; /* BLACK TEXT LIKE EKYC */
+  margin-bottom: 5px;
 }
 
 .stat-label {
-  font-size: 0.5rem;
-  color: #666666;
-  font-weight: 600;
+  font-size: 0.9rem !important;
+  color: #000000 !important; /* BLACK TEXT LIKE EKYC */
+  font-weight: 700 !important; /* BOLD LIKE EKYC */
 }
 
-/* COMPACT Dashboard Tables - REDUCED SPACING */
-.dashboard-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1px 0;
+/* DASHBOARD CONTAINER - MATCHING EKYC SUMMARY */
+.dashboard-container {
   background: #ffffff;
-  border-radius: 3px;
+  border-radius: 8px;
+  border: 2px solid #7fdad2;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  font-size: 0.55rem;
+  margin: 10px 0;
 }
 
-.dashboard-table th {
-  background: #7fdad2; /* EXACT TANLA TEAL */
-  color: #000000; /* BLACK TEXT */
-  padding: 1px 2px;
-  font-weight: 700;
-  font-size: 0.55rem;
+.dashboard-container-header {
+  background: #7fdad2;
+  padding: 12px 20px;
   text-align: center;
-  border: 1px solid #6bc9c1;
+  border-bottom: 2px solid #6bc9c1;
+}
+
+.dashboard-container-header h2 {
+  color: #000000;
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin: 0;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dashboard-content {
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* DASHBOARD TABLES - MATCHING EKYC SUMMARY STYLING (REMOVED OUTER BORDERS) */
+.dashboard-table-container {
+  overflow-x: auto;
+  max-width: 100%;
+  margin: 8px 0;
+  /* REMOVED: border, border-radius, background */
+}
+
+.dashboard-table {
+  width: 100% !important;
+  border-collapse: collapse;
+  margin: 4px 0;
+  background: #ffffff;
+  /* REMOVED: border-radius, box-shadow, border */
+  font-size: 0.65rem !important; /* MATCHING EKYC FONT SIZE */
+}
+
+/* TABLE HEADERS - MATCHING EKYC SUMMARY */
+.dashboard-table th {
+  background: #7fdad2 !important;
+  color: #000000 !important;
+  padding: 3px 4px !important;
+  font-weight: 700 !important; /* BOLD LIKE EKYC */
+  font-size: 0.65rem !important; /* MATCHING EKYC FONT SIZE */
+  text-align: center;
+  border: 1px solid #6bc9c1 !important;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 20px;
 }
 
 .dashboard-table td {
-  padding: 1px 2px;
+  padding: 3px 4px !important;
   text-align: center;
   border: 1px solid #e0e0e0;
-  font-size: 0.55rem;
-  font-weight: 700; /* BOLD NUMBERS */
-  color: #333333;
+  font-size: 0.65rem !important; /* MATCHING EKYC FONT SIZE */
+  font-weight: 700 !important; /* BOLD LIKE EKYC */
+  color: #000000 !important; /* BLACK TEXT LIKE EKYC */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 18px;
+}
+
+/* TOTAL CELL STYLING - MATCHING EKYC SUMMARY */
+.dashboard-table .total-cell {
+  background: #f8f9fa !important;
+  font-weight: 800 !important;
+}
+
+.dashboard-table .total-row {
+  background: #f1f8ff !important;
+}
+
+.dashboard-table .total-row td {
+  background: #f1f8ff !important;
+  font-weight: 800 !important;
 }
 
 .dashboard-table tbody tr:hover {
-  background: rgba(127, 218, 210, 0.1);
+  background: rgba(127, 218, 210, 0.05);
 }
 
-/* BOLD text for important numbers in tables */
-.dashboard-table .bold-number {
-  font-weight: 700;
-  color: #1a237e;
-  font-size: 0.6rem;
+.dashboard-table tbody tr:nth-child(even) {
+  background: #f8f9fa;
 }
 
-.dashboard-table .summary-row {
-  background: #f5f5f5;
-  font-weight: 700;
+.dashboard-table tbody tr:nth-child(even):hover {
+  background: rgba(127, 218, 210, 0.08);
 }
 
-.dashboard-table .grand-total {
-  background: #7fdad2;
+/* DASHBOARD SECTION STYLING - REDUCED SPACING */
+.dashboard-section {
+  margin-bottom: 8px;
+  padding: 6px;
+  background: #ffffff;
+  border-radius: 5px;
+  /* REMOVED: border */
+}
+
+.dashboard-section h3 {
+  margin: 0 0 6px 0;
+  font-size: 0.85rem;
   color: #000000;
   font-weight: 700;
+  text-align: left;
+  padding-bottom: 3px;
+  border-bottom: 2px solid #7fdad2;
 }
 
-/* CENTERED DASHBOARD CONTROLS - SIDE BY SIDE BUTTONS WITHOUT BOX */
-#dashboardControls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  margin: 4px auto;
-  width: fit-content;
-  max-width: 100%;
-  background: transparent;
-  border: none;
-  padding: 0;
+/* COPY REPORT BUTTON - MATCHING EKYC SUMMARY BLUE BUTTON */
+.dashboard-actions {
+  padding: 15px;
+  text-align: center;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin: 10px 0;
 }
 
-/* COPY REPORT BUTTON - COMPACT SIZE */
-.action-btn.secondary {
-  background: #1a237e !important;
+.copy-report-btn {
+  background: #3498db !important;
   color: #ffffff !important;
   border: none;
-  padding: 6px 12px;
-  border-radius: 3px;
-  font-weight: 600;
-  font-size: 0.8rem;
-  height: 30px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  min-width: 120px;
-}
-
-.action-btn.secondary:hover {
-  background: #151f6d !important;
-}
-
-/* EXPORT TO EXCEL BUTTON - COMPACT SIZE */
-.action-btn.primary {
-  background: #7fdad2;
-  color: #ffffff;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 3px;
-  font-weight: 600;
-  font-size: 0.8rem;
-  height: 30px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  min-width: 120px;
-}
-
-.action-btn.primary:hover {
-  background: #6bc9c1;
-}
-
-/* COMPACT UPLOAD BUTTON */
-.upload-btn {
-  background: #7fdad2; /* EXACT TANLA TEAL */
-  color: #ffffff; /* WHITE TEXT */
-  border: none;
-  padding: 2px 4px;
-  border-radius: 3px;
-  font-weight: 600;
+  padding: 10px 25px;
+  border-radius: 6px;
+  font-weight: 700;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  font-size: 0.6rem;
-  height: 18px;
-  display: flex;
+  font-size: 1rem;
+  height: 40px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  border: 1px solid #6bc9c1;
+  gap: 8px;
+  min-width: 180px;
+  box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
 }
 
-.upload-btn:hover {
-  background: #6bc9c1;
+.copy-report-btn:hover {
+  background: #2980b9 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(52, 152, 219, 0.4);
 }
 
-/* COMPACT MODAL STYLES for Dashboard - TANLA TEAL THEME */
+/* EXPORT TO EXCEL BUTTON - MATCHING EKYC STYLE */
+.export-excel-btn {
+  background: #7fdad2 !important;
+  color: #000000 !important;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 6px;
+  font-weight: 700 !important;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1rem !important;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 180px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border: 2px solid #6bc9c1 !important;
+}
+
+.export-excel-btn:hover {
+  background: #6bc9c1 !important;
+  transform: translateY(-1px);
+}
+
+/* COMPACT SUMMARY BOX - UPDATED TO MATCH EKYC */
+.summary-box {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin: 15px 0;
+  padding: 15px;
+}
+
+.summary-card {
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  color: black;
+  background: #7fdad2;
+  min-height: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 2px solid #6bc9c1;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.summary-number {
+  font-size: 1.5rem !important;
+  font-weight: 800 !important;
+  margin-bottom: 5px;
+  color: #000000 !important;
+}
+
+.summary-label {
+  font-size: 0.9rem !important;
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+/* HIGH-QUALITY SCREENSHOT OPTIMIZATIONS */
+.dashboard-table {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+.panel, .stat-card, .summary-card {
+  image-rendering: crisp-edges;
+}
+
+/* FORCE CLEAR RENDERING FOR SCREENSHOTS */
+@media screen {
+  .dashboard-table,
+  .stat-card,
+  .panel,
+  .summary-card {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+/* SIMPLE LOADING TEXT */
+.simple-loading {
+  text-align: center;
+  padding: 20px;
+  color: #2c5aa0;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* Responsive Design - UPDATED FOR EKYC STYLE */
+@media (max-width: 768px) {
+  .container {
+    padding: 0.5px;
+  }
+  
+  .stats-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  
+  .stat-card {
+    padding: 10px !important;
+    min-height: 50px;
+  }
+  
+  .stat-number {
+    font-size: 1.2rem !important;
+  }
+  
+  .stat-label {
+    font-size: 0.8rem !important;
+  }
+  
+  .dashboard-table {
+    font-size: 0.6rem !important;
+  }
+  
+  .dashboard-table th, 
+  .dashboard-table td {
+    padding: 2px 3px !important;
+    font-size: 0.6rem !important;
+  }
+  
+  .dashboard-actions {
+    gap: 10px;
+    flex-direction: column;
+  }
+  
+  .copy-report-btn,
+  .export-excel-btn {
+    min-width: 140px;
+    font-size: 0.9rem !important;
+    height: 35px;
+    padding: 8px 16px;
+  }
+  
+  .summary-box {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  
+  .summary-card {
+    padding: 10px;
+    min-height: 50px;
+  }
+  
+  .summary-number {
+    font-size: 1.2rem !important;
+  }
+  
+  .summary-label {
+    font-size: 0.8rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-table {
+    font-size: 0.55rem !important;
+  }
+  
+  .dashboard-table th,
+  .dashboard-table td {
+    padding: 1px 2px !important;
+    font-size: 0.55rem !important;
+  }
+  
+  .dashboard-header h2 {
+    font-size: 1.1rem !important;
+  }
+  
+  .stats-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .summary-box {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* COMPACT MODAL STYLES */
 .modal-overlay {
   position: fixed;
   z-index: 10000;
@@ -246,71 +462,128 @@
   background-color: #ffffff;
   margin: 0.5% auto;
   padding: 0;
-  border-radius: 4px;
+  border-radius: 8px;
   width: 90%;
   max-width: 400px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  border: 2px solid #7fdad2; /* EXACT TANLA TEAL BORDER */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  border: 2px solid #7fdad2;
 }
 
 .modal-header {
-  background: #7fdad2; /* EXACT TANLA TEAL */
-  color: #000000; /* BLACK TEXT */
-  padding: 4px 8px;
-  border-radius: 4px 4px 0 0;
+  background: #7fdad2;
+  color: #000000;
+  padding: 12px 20px;
+  border-radius: 8px 8px 0 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 2px solid #6bc9c1;
 }
 
 .modal-header h3 {
   margin: 0;
-  color: #000000; /* BLACK TEXT */
-  font-size: 0.8rem;
-  font-weight: 700;
+  color: #000000;
+  font-size: 1.1rem;
+  font-weight: 800;
 }
 
 .close-modal {
-  color: #000000; /* BLACK TEXT */
-  font-size: 14px;
+  color: #000000;
+  font-size: 16px;
   font-weight: bold;
   cursor: pointer;
   line-height: 1;
 }
 
-.close-modal:hover {
-  opacity: 0.7;
-}
-
 .modal-body {
-  padding: 8px;
+  padding: 15px;
 }
 
-/* REARRANGED MODAL ACTIONS - GENERATE BUTTON ON TOP */
+/* UPLOAD GRID */
+.upload-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.upload-item {
+  background: #fafafa;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #e0e0e0;
+}
+
+.upload-item h4 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: #333333;
+  font-size: 0.9rem;
+  text-align: center;
+  font-weight: 700;
+}
+
+.file-input-wrapper {
+  position: relative;
+  margin-bottom: 5px;
+}
+
+.file-input-wrapper input[type="file"] {
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.file-input-label {
+  display: block;
+  padding: 8px 12px;
+  background: #7fdad2;
+  color: #000000;
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.8rem;
+  border: 2px solid #6bc9c1;
+}
+
+.file-input-label:hover {
+  background: #6bc9c1;
+}
+
+.file-status {
+  font-size: 0.7rem;
+  color: #666666;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* MODAL ACTIONS */
 .modal-actions {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  margin-top: 4px;
-  padding-top: 4px;
+  gap: 8px;
+  margin-top: 15px;
+  padding-top: 15px;
   border-top: 1px solid #e0e0e0;
   align-items: center;
 }
 
 .generate-btn {
-  background: #7fdad2; /* EXACT TANLA TEAL */
-  color: #ffffff; /* WHITE TEXT */
+  background: #7fdad2;
+  color: #000000;
   border: none;
-  padding: 3px 4px;
-  border-radius: 3px;
-  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-size: 0.65rem;
-  height: 24px;
+  font-size: 0.9rem;
+  height: 35px;
   order: 1;
-  border: 1px solid #6bc9c1;
-  min-width: 110px;
+  border: 2px solid #6bc9c1;
+  min-width: 120px;
 }
 
 .generate-btn:hover:not(:disabled) {
@@ -326,15 +599,14 @@
   background: #95a5a6;
   color: #ffffff;
   border: none;
-  padding: 2px 4px;
-  border-radius: 3px;
+  padding: 8px 16px;
+  border-radius: 6px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-size: 0.6rem;
-  height: 22px;
+  font-size: 0.8rem;
+  height: 30px;
   order: 2;
-  min-width: 90px;
+  min-width: 100px;
 }
 
 .cancel-btn:hover {
@@ -342,24 +614,24 @@
 }
 
 .upload-instructions {
-  font-size: 0.5rem;
+  font-size: 0.7rem;
   color: #666666;
   text-align: center;
   order: 3;
-  margin-top: 2px;
+  margin-top: 8px;
   width: 100%;
 }
 
 /* ERROR MESSAGE STYLING */
 .error-message {
-  color: #ee8080;
-  font-size: 0.65rem;
+  color: #e74c3c;
+  font-size: 0.8rem;
   text-align: center;
-  margin: 2px 0;
-  padding: 2px;
-  background: rgba(238, 128, 128, 0.1);
-  border-radius: 3px;
-  border: 1px solid rgba(238, 128, 128, 0.2);
+  margin: 8px 0;
+  padding: 8px;
+  background: rgba(231, 76, 60, 0.1);
+  border-radius: 4px;
+  border: 1px solid rgba(231, 76, 60, 0.2);
   display: none;
 }
 
@@ -367,233 +639,42 @@
   display: block;
 }
 
-/* COMPACT UPLOAD GRID */
-.upload-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-bottom: 4px;
-}
-
-.upload-item {
-  background: #fafafa;
-  padding: 4px;
-  border-radius: 3px;
-  border: 1px solid #e0e0e0;
-}
-
-.upload-item h4 {
-  margin-top: 0;
-  margin-bottom: 1px;
-  color: #333333;
-  font-size: 0.7rem;
-  text-align: center;
-  font-weight: 700;
-}
-
-.file-input-wrapper {
-  position: relative;
-  margin-bottom: 1px;
-}
-
-.file-input-wrapper input[type="file"] {
-  opacity: 0;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-}
-
-.file-input-label {
-  display: block;
-  padding: 1px 3px;
-  background: #7fdad2; /* EXACT TANLA TEAL */
-  color: #ffffff; /* WHITE TEXT */
-  border-radius: 3px;
-  text-align: center;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s ease;
-  font-size: 0.55rem;
-  border: 1px solid #6bc9c1;
-}
-
-.file-input-label:hover {
-  background: #6bc9c1;
-}
-
-.file-status {
-  font-size: 0.5rem;
-  color: #666666;
-  text-align: center;
-  font-weight: 600;
-}
-
-/* Dashboard Output */
-#dashboardOutput, #ekycReportOutput {
-  margin-top: 2px;
-}
-
-/* REDUCED GAP BETWEEN DASHBOARD SECTIONS */
-.dashboard-section {
-  margin-bottom: 2px !important;
-}
-
-.dashboard-section:last-child {
-  margin-bottom: 0 !important;
-}
-
-/* COMPACT SUMMARY SECTIONS */
-.summary-section {
-  margin: 2px 0;
-  padding: 4px;
-  background: #ffffff;
-  border-radius: 3px;
-  border: 1px solid #e0e0e0;
-}
-
-.summary-section h3 {
-  color: #1a237e;
-  font-size: 0.7rem;
-  margin-bottom: 2px;
-  padding-bottom: 1px;
-  border-bottom: 1px solid #7fdad2; /* EXACT TANLA TEAL BORDER */
-  font-weight: 700;
-}
-
-/* Responsive Design for Dashboard */
-@media (max-width: 768px) {
-  .container {
-    padding: 1px;
-  }
-  
-  .stats-container {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1px;
-  }
-  
-  .stat-card {
-    padding: 3px;
-    min-height: 30px;
-  }
-  
-  .stat-number {
-    font-size: 12px;
-  }
-  
-  .dashboard-table {
-    font-size: 0.5rem;
-  }
-  
-  .dashboard-table th, 
-  .dashboard-table td {
-    padding: 1px;
-  }
-  
-  #dashboardControls {
-    flex-direction: row;
-    gap: 4px;
-    width: 100%;
-    justify-content: center;
-  }
-  
-  .action-btn.secondary,
-  .action-btn.primary {
-    width: auto;
-    min-width: 100px;
-    justify-content: center;
-  }
-}
-
-/* Loading Spinner - REMOVED COMPLEX ANIMATION */
-.loading-spinner {
-  display: none; /* Hide complex spinner */
-}
-
-/* SIMPLE LOADING TEXT */
-.simple-loading {
-  text-align: center;
-  padding: 15px;
-  color: #2c5aa0;
-  font-weight: 600;
-  font-size: 14px;
-}
-
-/* REMOVE PAGE SWITCHING EFFECTS */
-#classificationPage,
-#dashboardPage,
-#ekycReportPage {
-  transition: none !important;
-  animation: none !important;
-}
-
 /* HIDDEN MODAL WHEN NOT NEEDED */
 .modal-overlay.hidden {
   display: none !important;
 }
 
-/* COMPACT TABLE STYLES FOR 30-DAY DATA */
-.compact-table {
-  font-size: 0.55rem !important;
-  margin: 0 !important;
+/* ERROR POPUP STYLES */
+.error-popup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #e74c3c;
+  color: white;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 10001;
+  max-width: 400px;
 }
 
-.compact-table th,
-.compact-table td {
-  padding: 1px !important;
-  font-size: 0.55rem !important;
-}
-
-/* BOLD NUMBERS IN TABLES */
-.bold-number {
-  font-weight: 700 !important;
-  color: #1a237e !important;
-  font-size: 0.6rem !important;
-}
-
-/* REDUCE SPACE BETWEEN MONTHLY AND DAILY TABLES */
-.dashboard-table + .dashboard-table {
-  margin-top: 2px !important;
-}
-
-/* COMPACT SUMMARY BOX */
-.summary-box {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 8px;
-  margin: 8px 0;
-}
-
-.summary-card {
-  padding: 8px;
-  border-radius: 4px;
-  text-align: center;
-  color: black;
-  background: #7fdad2;
-  min-height: 40px;
+.error-content {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
 
-.summary-number {
+.close-btn {
+  background: none;
+  border: none;
+  color: white;
   font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 2px;
+  cursor: pointer;
+  padding: 0;
+  margin-left: auto;
 }
 
-.summary-label {
-  font-size: 10px;
-  opacity: 0.9;
-}
-
-/* MINIMAL SPACING FOR DASHBOARD SECTIONS */
-.dashboard-section {
-  margin: 1px 0 !important;
-  padding: 0 !important;
-}
-
-.dashboard-section h3 {
-  margin: 4px 0 !important;
-  padding: 4px !important;
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }

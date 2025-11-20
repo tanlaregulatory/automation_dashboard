@@ -1,0 +1,449 @@
+/* Revenue Dashboard Header Styles */
+.revenue-dashboard-container {
+    padding: 8px;
+    background: #f8fafc;
+    min-height: 100vh;
+}
+
+/* EXACT EKYC SUMMARY HEADER DESIGN */
+.dashboard-header {
+    background: #7fdad2;
+    padding: 15px 20px;
+    margin: 0 0 15px 0;
+    border-radius: 8px;
+    position: relative;
+    min-height: 60px;
+    display: block;
+}
+
+.dashboard-header h2 {
+    color: #000000;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+    line-height: 30px;
+}
+
+.upload-btn {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    background: #7fdad2;
+    color: #2c3e50;
+    border: 1px solid #5fc9bf;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 100px;
+    height: 30px;
+}
+
+.upload-btn:hover {
+    background: #5fc9bf;
+}
+
+/* ALL OTHER STYLES REMAIN EXACTLY THE SAME */
+.compact-modal .modal-content {
+    max-width: 400px;
+    margin: 2% auto;
+    max-height: 80vh;
+}
+
+.compact-modal .modal-header {
+    padding: 6px 10px;
+    background: linear-gradient(135deg, #7fdad2, #5fc9bf);
+    border-bottom: 1px solid #5fc9bf;
+}
+
+.compact-modal .modal-header h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.compact-modal .modal-body {
+    padding: 10px;
+    background: #f8fafc;
+}
+
+.file-upload-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 10px;
+}
+
+.file-upload-item {
+    border: 1px solid #e1e8ed;
+    border-radius: 3px;
+    padding: 6px;
+    background: white;
+    transition: all 0.2s ease;
+}
+
+.file-upload-item:hover {
+    border-color: #7fdad2;
+}
+
+.file-upload-item.required h4::after {
+    content: " *";
+    color: #e74c3c;
+}
+
+.file-upload-item h4 {
+    margin: 0 0 4px 0;
+    font-size: 11px;
+    color: #2c3e50;
+    font-weight: bold;
+}
+
+.file-drop-zone {
+    margin-bottom: 3px;
+}
+
+.drop-area {
+    border: 1px dashed #7fdad2;
+    border-radius: 3px;
+    padding: 6px;
+    text-align: center;
+    cursor: pointer;
+    background-color: #f8fafc;
+    transition: all 0.2s ease;
+    min-height: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.drop-area:hover {
+    border-color: #5fc9bf;
+    background-color: #f0fdfa;
+}
+
+.drop-area.highlight {
+    border-color: #5fc9bf;
+    background-color: #e0f7f5;
+}
+
+.drop-icon {
+    font-size: 1rem;
+    margin-bottom: 2px;
+    color: #7fdad2;
+}
+
+.drop-area p {
+    margin: 1px 0;
+    color: #2c3e50;
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 1.1;
+}
+
+.drop-subtitle {
+    font-size: 9px;
+    color: #7f8c8d;
+    margin: 1px 0;
+}
+
+.browse-btn {
+    background: #7fdad2;
+    color: white;
+    border: none;
+    padding: 2px 6px;
+    border-radius: 2px;
+    cursor: pointer;
+    margin-top: 2px;
+    font-size: 9px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.browse-btn:hover {
+    background: #5fc9bf;
+}
+
+.file-status {
+    margin-top: 2px;
+    font-size: 9px;
+    color: #27ae60;
+    text-align: center;
+    font-weight: 500;
+}
+
+.modal-actions.compact {
+    text-align: center;
+    padding-top: 8px;
+    border-top: 1px solid #e1e8ed;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.generate-btn {
+    background: #7fdad2;
+    color: #2c3e50;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    order: 1;
+}
+
+.generate-btn:hover:not(:disabled) {
+    background: #5fc9bf;
+}
+
+.generate-btn:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+}
+
+.cancel-btn {
+    background: #95a5a6;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    order: 2;
+}
+
+.cancel-btn:hover {
+    background: #7f8c8d;
+}
+
+.upload-instructions {
+    font-size: 10px;
+    color: #7f8c8d;
+    margin-top: 6px;
+    text-align: center;
+    order: 3;
+}
+
+.tables-container {
+    background: white;
+    border-radius: 6px;
+    padding: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #e1e8ed;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.comparison-section {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e1e8ed;
+}
+
+.comparison-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.comparison-section h3 {
+    color: #2c3e50;
+    margin: 0 0 6px 0;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 4px 8px;
+    background: #7fdad2;
+    border-radius: 3px;
+    text-align: center;
+}
+
+.comparison-section h4 {
+    color: #2c3e50;
+    margin: 0 0 4px 0;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 3px 6px;
+    background: #e0f7f5;
+    border-radius: 2px;
+    text-align: center;
+}
+
+.revenue-table {
+    border: 1px solid #7fdad2;
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 11px;
+    font-family: Arial, sans-serif;
+    background: white;
+    margin: 4px 0;
+}
+
+.revenue-table th {
+    background: #7fdad2;
+    color: #2c3e50;
+    padding: 3px 5px;
+    border: 1px solid #5fc9bf;
+    text-align: center;
+    font-weight: bold;
+    font-size: 10px;
+}
+
+.revenue-table td {
+    padding: 2px 4px;
+    border: 1px solid #7fdad2;
+    text-align: center;
+    font-size: 10px;
+}
+
+.revenue-table .bold-number {
+    font-weight: bold;
+    font-size: 11px;
+}
+
+.positive {
+    color: #059669;
+    font-weight: bold;
+    background-color: #d1fae5;
+    padding: 1px 3px;
+    border-radius: 2px;
+    font-size: 9px;
+}
+
+.negative {
+    color: #dc2626;
+    font-weight: bold;
+    background-color: #fee2e2;
+    padding: 1px 3px;
+    border-radius: 2px;
+    font-size: 9px;
+}
+
+.neutral {
+    color: #6b7280;
+    font-weight: bold;
+    background-color: #f3f4f6;
+    padding: 1px 3px;
+    border-radius: 2px;
+    font-size: 9px;
+}
+
+.grand-total-row {
+    background-color: #e0f7f5 !important;
+    font-weight: bold;
+}
+
+.revenue-table tr:nth-child(even) {
+    background-color: #f8fafc;
+}
+
+.copy-section {
+    text-align: center;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #e1e8ed;
+}
+
+.copy-btn {
+    background: #27ae60;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.copy-btn:hover {
+    background: #219653;
+}
+
+.loading {
+    background: white;
+    border: 1px solid #7fdad2;
+    border-radius: 3px;
+    padding: 10px;
+    margin: 8px 0;
+    text-align: center;
+    font-size: 11px;
+    max-width: 1200px;
+    margin: 8px auto;
+}
+
+.error {
+    background: #fef2f2;
+    border: 1px solid #dc2626;
+    color: #dc2626;
+    border-radius: 3px;
+    padding: 8px;
+    margin: 8px 0;
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+    max-width: 1200px;
+    margin: 8px auto;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 12px;
+}
+
+.panel {
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard-header {
+        padding: 10px 15px;
+        text-align: center;
+    }
+    
+    .dashboard-header h2 {
+        font-size: 1.2rem;
+        margin-bottom: 8px;
+    }
+    
+    .upload-btn {
+        position: relative;
+        right: auto;
+        top: auto;
+        margin: 0 auto;
+        display: block;
+        width: 100%;
+        max-width: 120px;
+    }
+    
+    .compact-modal .modal-content {
+        width: 95%;
+        margin: 1% auto;
+        max-width: 380px;
+    }
+    
+    .revenue-table {
+        font-size: 9px;
+    }
+    
+    .revenue-table th,
+    .revenue-table td {
+        padding: 1px 2px;
+    }
+}
+

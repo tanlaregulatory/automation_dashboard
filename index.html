@@ -1,490 +1,828 @@
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>AI Template Classifier & EKYC Dashboard</title>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-        <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-        <link rel="stylesheet" href="Common.css">
-        <link rel="stylesheet" href="classification.css" id="classification-css">
-        <link rel="stylesheet" href="dashboard.css" id="dashboard-css" disabled>
-        <link rel="stylesheet" href="Ekyc_Summary.css" id="ekyc-summary-css" disabled>
-    </head>
-    <body>
-        <!-- Login Overlay -->
-        <div id="loginOverlay" class="login-overlay">
-            <div class="login-container">
-                <div class="login-left">
-                    <img src="https://cdni.iconscout.com/illustration/premium/thumb/ai-robot-assistant-illustration-download-in-svg-png-gif-file-formats--artificial-intelligence-chatbot-customer-service-technology-pack-science-illustrations-6430773.png?f=webp" 
-                        alt="AI Assistant" class="login-illustration" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Template Classifier & EKYC Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="Common.css">
+    <link rel="stylesheet" href="classification.css" id="classification-css">
+    <link rel="stylesheet" href="dashboard.css" id="dashboard-css" disabled>
+    <link rel="stylesheet" href="Ekyc_Summary.css" id="ekyc-summary-css" disabled>
+    <link rel="stylesheet" href="revenue.css" id="revenue-dashboard-css" disabled>
+</head>
+<body>
+    <!-- Login Overlay -->
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-container">
+            <div class="login-left">
+                <img src="https://cdni.iconscout.com/illustration/premium/thumb/ai-robot-assistant-illustration-download-in-svg-png-gif-file-formats--artificial-intelligence-chatbot-customer-service-technology-pack-science-illustrations-6430773.png?f=webp" 
+                    alt="AI Assistant" class="login-illustration" />
+            </div>
+            <div class="login-right">
+                <!-- Welcome Header -->
+                <div class="login-welcome-header">
+                    <h1>WELCOME</h1>
+                    <p class="login-subtitle">Login to your account</p>
                 </div>
-                <div class="login-right">
-                    <!-- Welcome Header -->
-                    <div class="login-welcome-header">
-                        <h1>WELCOME</h1>
-                        <p class="login-subtitle">Login to your account</p>
-                    </div>
-                    
-                    <!-- Login Form -->
-                    <div id="loginFormContainer">
-                        <input type="text" id="loginUsername" placeholder="Enter Username" />
-                        <input type="password" id="loginPassword" placeholder="Enter Password" />
-                        <button id="loginBtn" type="button">🔐 Login</button>
-                        <a href="#" id="forgotPasswordLink">Forgot Password?</a>
-                        <div id="loginError"></div>
-                    </div>
+                
+                <!-- Login Form -->
+                <div id="loginFormContainer">
+                    <input type="text" id="loginUsername" placeholder="Enter Username" />
+                    <input type="password" id="loginPassword" placeholder="Enter Password" />
+                    <button id="loginBtn" type="button">🔐 Login</button>
+                    <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+                    <div id="loginError"></div>
+                </div>
 
-                    <!-- Password Reset Form -->
-                    <div id="resetFormContainer" style="display:none;">
-                        <input type="text" id="resetUsername" placeholder="Enter Username" />
-                        <input type="password" id="newPassword" placeholder="New Password" />
-                        <input type="password" id="confirmPassword" placeholder="Confirm Password" />
-                        <button id="resetBtn" type="button">🔄 Reset Password</button>
-                        <a href="#" id="backToLoginLink">Back to Login</a>
-                        <div id="resetError"></div>
-                    </div>
+                <!-- Password Reset Form -->
+                <div id="resetFormContainer" style="display:none;">
+                    <input type="text" id="resetUsername" placeholder="Enter Username" />
+                    <input type="password" id="newPassword" placeholder="New Password" />
+                    <input type="password" id="confirmPassword" placeholder="Confirm Password" />
+                    <button id="resetBtn" type="button">🔄 Reset Password</button>
+                    <a href="#" id="backToLoginLink">Back to Login</a>
+                    <div id="resetError"></div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Left Sidebar Navigation -->
-        <div class="sidebar" id="sidebar" style="display:none;">
-            <div class="sidebar-header">
-                <h3>🎯 REGULATORY</h3>
+    <!-- Left Sidebar Navigation -->
+    <div class="sidebar" id="sidebar" style="display:none;">
+        <div class="sidebar-header">
+            <h3>🎯 REGULATORY</h3>
+        </div>
+        <div class="sidebar-menu">
+            <!-- Classification -->
+            <div class="menu-item active" id="classificationNav">
+                <span class="menu-icon">🗂️</span>
+                <span class="menu-text">Classification</span>
             </div>
-            <div class="sidebar-menu">
-                <!-- Classification -->
-                <div class="menu-item active" id="classificationNav">
-                    <span class="menu-icon">🗂️</span>
-                    <span class="menu-text">Classification</span>
-                </div>
-                <!-- KYC Dashboard -->
-                <div class="menu-item" id="dashboardNav">
-                    <span class="menu-icon">📊</span>
-                    <span class="menu-text">KYC Dashboard</span>
-                </div>
-                <!-- EKYC Summary Report -->
-                <div class="menu-item" id="ekycReportNav">
-                    <span class="menu-icon">📋</span>
-                    <span class="menu-text">EKYC Summary Report</span>
+            <!-- KYC Dashboard -->
+            <div class="menu-item" id="dashboardNav">
+                <span class="menu-icon">📊</span>
+                <span class="menu-text">KYC Dashboard</span>
+            </div>
+            <!-- EKYC Summary Report -->
+            <div class="menu-item" id="ekycReportNav">
+                <span class="menu-icon">📋</span>
+                <span class="menu-text">EKYC Summary Report</span>
+            </div>
+            <!-- Revenue Dashboard -->
+            <div class="menu-item" id="revenueDashboardNav">
+                <span class="menu-icon">💰</span>
+                <span class="menu-text">Revenue Dashboard</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <div class="header" id="mainHeader" style="display:none;">
+        <div class="header-left">
+            <span>🤖 AI Compliance Dashboard</span>
+        </div>
+        <div class="header-right">
+            <div class="ts-wrap">
+                <span style="font-weight:500;">Date:</span>
+                <span id="currentDateTime"></span>
+            </div>
+            <span id="welcomeUser">Welcome </span>
+            <div class="profile-header-container">
+                <img id="headerProfilePhoto" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr0aT_CAtFQGFmTDbdNqwwHThcrtzJNaHOrA&s" alt="User" class="profile-photo">
+                <button id="settingsBtn" class="btn--settings">Settings</button>
+                <div id="settingsDropdown" class="settings-dropdown" style="display:none;">
+                    <div class="dropdown-item" onclick="openProfilePopup()">👤 Profile</div>
+                    <div class="dropdown-item" onclick="openChangePasswordPopup()">🔒 Change Password</div>
+                    <div class="dropdown-item" onclick="openChangeProfilePicPopup()">🖼️ Change Profile Pic</div>
+                    <div class="dropdown-item" onclick="handleLogout()">🚪 Logout</div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Main Header -->
-        <div class="header" id="mainHeader" style="display:none;">
-            <div class="header-left">
-                <span>🤖 AI Compliance Dashboard</span>
+    <!-- Profile Popup -->
+    <div id="profilePopup" class="modal-overlay" style="display: none;">
+        <div class="modal-content profile-modal">
+            <div class="modal-header">
+                <h3>👤 User Profile</h3>
+                <span class="close-modal" onclick="closeProfilePopup()">&times;</span>
             </div>
-            <div class="header-right">
-                <div class="ts-wrap">
-                    <span style="font-weight:500;">Date:</span>
-                    <span id="currentDateTime"></span>
-                </div>
-                <span id="welcomeUser">Welcome </span>
-                <div class="profile-header-container">
-                    <img id="headerProfilePhoto" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr0aT_CAtFQGFmTDbdNqwwHThcrtzJNaHOrA&s" alt="User" class="profile-photo">
-                    <button id="settingsBtn" class="btn--settings">Settings</button>
-                    <div id="settingsDropdown" class="settings-dropdown" style="display:none;">
-                        <div class="dropdown-item" onclick="openProfilePopup()">👤 Profile</div>
-                        <div class="dropdown-item" onclick="openChangePasswordPopup()">🔒 Change Password</div>
-                        <div class="dropdown-item" onclick="openChangeProfilePicPopup()">🖼️ Change Profile Pic</div>
-                        <div class="dropdown-item" onclick="handleLogout()">🚪 Logout</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Profile Popup -->
-        <div id="profilePopup" class="modal-overlay" style="display: none;">
-            <div class="modal-content profile-modal">
-                <div class="modal-header">
-                    <h3>👤 User Profile</h3>
-                    <span class="close-modal" onclick="closeProfilePopup()">&times;</span>
-                </div>
-                <div class="modal-body">
-                    <div class="profile-section">
-                        <h4>Profile Information</h4>
-                        <div class="info-grid">
-                            <div class="info-item">
-                                <label>Username:</label>
-                                <span id="profileUsername">-</span>
-                            </div>
-                            <div class="info-item">
-                                <label>Email:</label>
-                                <span id="profileEmail">-</span>
-                            </div>
-                            <div class="info-item">
-                                <label>Mobile:</label>
-                                <span id="profileMobile">-</span>
-                            </div>
-                            <div class="info-item">
-                                <label>Last Login:</label>
-                                <span id="profileLastLogin">-</span>
-                            </div>
+            <div class="modal-body">
+                <div class="profile-section">
+                    <h4>Profile Information</h4>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Username:</label>
+                            <span id="profileUsername">-</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Email:</label>
+                            <span id="profileEmail">-</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Mobile:</label>
+                            <span id="profileMobile">-</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Last Login:</label>
+                            <span id="profileLastLogin">-</span>
                         </div>
                     </div>
-                    
-                    <div class="modal-actions">
-                        <button onclick="closeProfilePopup()" class="action-btn secondary">Close</button>
-                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button onclick="closeProfilePopup()" class="action-btn secondary">Close</button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Change Password Popup -->
-        <div id="changePasswordPopup" class="modal-overlay" style="display: none;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>🔒 Change Password</h3>
-                    <span class="close-modal" onclick="closeChangePasswordPopup()">&times;</span>
+    <!-- Change Password Popup -->
+    <div id="changePasswordPopup" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🔒 Change Password</h3>
+                <span class="close-modal" onclick="closeChangePasswordPopup()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label>Current Password:</label>
+                    <input type="password" id="currentPassword" placeholder="Enter current password">
                 </div>
-                <div class="modal-body">
-                    <div class="input-group">
-                        <label>Current Password:</label>
-                        <input type="password" id="currentPassword" placeholder="Enter current password">
-                    </div>
-                    <div class="input-group">
-                        <label>New Password:</label>
-                        <input type="password" id="newPasswordChange" placeholder="Enter new password">
-                    </div>
-                    <div class="input-group">
-                        <label>Confirm New Password:</label>
-                        <input type="password" id="confirmNewPassword" placeholder="Confirm new password">
-                    </div>
-                    <div id="passwordError" class="error-message"></div>
-                    <div class="modal-actions">
-                        <button onclick="updatePassword()" class="action-btn primary">Update Password</button>
-                        <button onclick="closeChangePasswordPopup()" class="action-btn secondary">Cancel</button>
-                    </div>
+                <div class="input-group">
+                    <label>New Password:</label>
+                    <input type="password" id="newPasswordChange" placeholder="Enter new password">
+                </div>
+                <div class="input-group">
+                    <label>Confirm New Password:</label>
+                    <input type="password" id="confirmNewPassword" placeholder="Confirm new password">
+                </div>
+                <div id="passwordError" class="error-message"></div>
+                <div class="modal-actions">
+                    <button onclick="updatePassword()" class="action-btn primary">Update Password</button>
+                    <button onclick="closeChangePasswordPopup()" class="action-btn secondary">Cancel</button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Change Profile Pic Popup -->
-        <div id="changeProfilePicPopup" class="modal-overlay" style="display: none;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>🖼️ Change Profile Picture</h3>
-                    <span class="close-modal" onclick="closeChangeProfilePicPopup()">&times;</span>
+    <!-- Change Profile Pic Popup -->
+    <div id="changeProfilePicPopup" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🖼️ Change Profile Picture</h3>
+                <span class="close-modal" onclick="closeChangeProfilePicPopup()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="profile-picture-container">
+                    <img id="profilePhotoLarge" src="https://via.placeholder.com/120?text=User" alt="Profile" class="profile-photo-large">
+                    <div class="profile-actions">
+                        <input type="file" id="uploadPhotoInput" accept="image/*" style="display:none;">
+                        <button onclick="document.getElementById('uploadPhotoInput').click()" class="action-btn primary">📁 Upload Photo</button>
+                        <button onclick="deleteProfilePhoto()" class="action-btn secondary">🗑️ Delete Photo</button>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <div class="profile-picture-container">
-                        <img id="profilePhotoLarge" src="https://via.placeholder.com/120?text=User" alt="Profile" class="profile-photo-large">
-                        <div class="profile-actions">
-                            <input type="file" id="uploadPhotoInput" accept="image/*" style="display:none;">
-                            <button onclick="document.getElementById('uploadPhotoInput').click()" class="action-btn primary">📁 Upload Photo</button>
-                            <button onclick="deleteProfilePhoto()" class="action-btn secondary">🗑️ Delete Photo</button>
+                <div class="modal-actions">
+                    <button onclick="closeChangeProfilePicPopup()" class="action-btn secondary">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content" id="mainContent" style="display:none;">
+        
+        <!-- Classification Page -->
+        <div class="page" id="classificationPage" style="display:block;">
+            <div class="classification-container">
+                <!-- Left Panel: BULK TEMPLATE AUDIT -->
+                <div class="classification-panel">
+                    <div class="panel-header">BULK TEMPLATE AUDIT</div>
+                    <div class="panel-content">
+                        <div class="upload-area" id="uploadArea">
+                            <span>📁 Upload File for AI Classification</span><br>
+                            <small>Drag or Choose File (XLSX/CSV)</small>
+                        </div>
+                        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display: none;">
+                        
+                        <!-- AGENT SECTION - SIMPLIFIED -->
+                        <div class="agent-section">
+                            <div class="input-group">
+                                <label for="numPeople">Number of Agents:</label>
+                                <input type="number" id="numPeople" value="1" min="1" max="10">
+                            </div>
+                            
+                            <div id="peopleList" class="people-list"></div>
+                            
+                            <button type="button" id="addAgentBtn" class="action-btn secondary">
+                                ➕ Add Agent
+                            </button>
+                        </div>
+                        
+                        <div class="instructions">
+                            <strong>🤖 AI/NLP Classification Engine</strong><br>
+                            • Intelligent contextual analysis<br>
+                            • Confidence scoring with manual review flagging<br>
+                            • All original columns preserved + 5 new columns added<br>
+                            <strong>📊 Output Columns Added:</strong><br>
+                            1. Template_Type: AI classification<br>
+                            2. Confidence: AI confidence score<br>
+                            3. Variable_Format: Validation result<br>
+                            4. Agent_Name: Consistent assignment<br>
+                            5. Classification_Date: Processing date
+                        </div>
+                        
+                        <button type="button" id="submitBtn" class="submit-btn">
+                            🚀 Process with AI Engine
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Right Panel: SINGLE TEMPLATE AUDIT -->
+                <div class="classification-panel">
+                    <div class="panel-header">SINGLE TEMPLATE AUDIT</div>
+                    <div class="panel-content">
+                        <textarea class="single-input" id="singleMessage" placeholder="Enter your template message here for AI analysis..."></textarea>
+                        
+                        <div class="button-group">
+                            <button type="button" id="resetSingleBtn" class="action-btn secondary">
+                                🔄 Reset
+                            </button>
+                            <button type="button" id="processSingleBtn" class="action-btn primary">
+                                🤖 Analyze with AI
+                            </button>
+                        </div>
+                        
+                        <div id="singleResult" class="result-container">
+                            <div class="result-item">
+                                <strong>Template Type:</strong> 
+                                <span id="templateType">-</span>
+                            </div>
+                            <div class="result-item">
+                                <strong>Confidence Score:</strong> 
+                                <span id="confidenceScore">-</span>
+                            </div>
+                            <div class="result-item">
+                                <strong>Variable Format:</strong> 
+                                <span id="variableFormat">-</span>
+                            </div>
+                            <div class="result-item">
+                                <strong>Classification Details:</strong> 
+                                <span id="classificationDetails">-</span>
+                            </div>
+                        </div>
+                        
+                        <div class="instructions">
+                            <strong>🔍 Single Template Testing</strong><br>
+                            • Test individual messages with AI classification<br>
+                            • Get instant feedback on template type and confidence<br>
+                            • Validate variable placeholder formats<br>
+                            • Perfect for testing new templates before bulk processing
                         </div>
                     </div>
-                    <div class="modal-actions">
-                        <button onclick="closeChangeProfilePicPopup()" class="action-btn secondary">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- KYC Dashboard Page -->
+        <div class="page" id="dashboardPage" style="display:none;">
+            <div class="container">
+                <div class="panel">
+                    <div class="dashboard-header">
+                        <h2>📊 Automated KYC Dashboard</h2>
+                        <button type="button" id="openKycUploadModal" class="upload-btn">
+                            📁 Upload Files
+                        </button>
+                    </div>
+                    
+                    <!-- KYC Stats Cards -->
+                    <div class="stats-container" id="kycStatsContainer" style="display: none;">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalReg">0</div>
+                            <div class="stat-label">Total Registered</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalPending">0</div>
+                            <div class="stat-label">Total Pending</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalApproved">0</div>
+                            <div class="stat-label">Total Approved</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="refundedCount">0</div>
+                            <div class="stat-label">Refunded</div>
+                        </div>
+                    </div>
+
+                    <!-- Dashboard Tables -->
+                    <div id="dashboardOutput"></div>
+                    
+                    <!-- Controls -->
+                    <div id="dashboardControls" style="text-align: center; margin-top: 20px; display: none;">
+                        <button type="button" onclick="copyDashboardToClipboard()" class="action-btn secondary">
+                            📋 Copy Report
+                        </button>
+                        <button type="button" onclick="exportExactDashboard()" class="action-btn primary">
+                            📊 Export to Excel
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Main Content Area -->
-        <div class="main-content" id="mainContent" style="display:none;">
+        <!-- EKYC Summary Report Page -->
+        <div class="page" id="ekycReportPage" style="display:none;overflow-y: auto;">
+            <div class="container">
+                <div class="panel">
+                    <div class="dashboard-header">
+                        <h2>📋 Automated EKYC Summary </h2>
+                        <button type="button" id="openEkycUploadModal" class="upload-btn">
+                            📁 Upload Files
+                        </button>
+                    </div>
+                    
+                    <!-- EKYC Stats Cards -->
+                    <div class="stats-container" id="ekycStatsContainer" style="display: none;">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalPE">0</div>
+                            <div class="stat-label">Total PE</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalTM">0</div>
+                            <div class="stat-label">Total TM</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalTME">0</div>
+                            <div class="stat-label">Total TME</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalApprovedEkyc">0</div>
+                            <div class="stat-label">Total Approved</div>
+                        </div>
+                    </div>
+
+                    <!-- EKYC Tables -->
+                    <div id="ekycReportOutput"></div>
+                </div>
+            </div>
+        </div>
+
+
+<!-- Revenue Dashboard Page -->
+<div class="page" id="revenueDashboardPage" style="display:none;">
+    <div class="container">
+        <div class="panel">
+            <div class="dashboard-header">
+                <h2> Revenue Dashboard</h2>
+                <button type="button" id="openRevenueUploadModal" class="upload-btn">
+                    📁 Upload Files
+                </button>
+            </div>
             
-            <!-- Classification Page -->
-            <div class="page" id="classificationPage" style="display:block;">
-                <div class="classification-container">
-                    <!-- Left Panel: BULK TEMPLATE AUDIT -->
-                    <div class="classification-panel">
-                        <div class="panel-header">BULK TEMPLATE AUDIT</div>
-                        <div class="panel-content">
-                            <div class="upload-area" id="uploadArea">
-                                <span>📁 Upload File for AI Classification</span><br>
-                                <small>Drag or Choose File (XLSX/CSV)</small>
-                            </div>
-                            <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display: none;">
-                            
-                            <!-- AGENT SECTION - SIMPLIFIED -->
-                            <div class="agent-section">
-                                <div class="input-group">
-                                    <label for="numPeople">Number of Agents:</label>
-                                    <input type="number" id="numPeople" value="1" min="1" max="10">
-                                </div>
-                                
-                                <div id="peopleList" class="people-list"></div>
-                                
-                                <button type="button" id="addAgentBtn" class="action-btn secondary">
-                                    ➕ Add Agent
-                                </button>
-                            </div>
-                            
-                            <div class="instructions">
-                                <strong>🤖 AI/NLP Classification Engine</strong><br>
-                                • Intelligent contextual analysis<br>
-                                • Confidence scoring with manual review flagging<br>
-                                • All original columns preserved + 5 new columns added<br>
-                                <strong>📊 Output Columns Added:</strong><br>
-                                1. Template_Type: AI classification<br>
-                                2. Confidence: AI confidence score<br>
-                                3. Variable_Format: Validation result<br>
-                                4. Agent_Name: Consistent assignment<br>
-                                5. Classification_Date: Processing date
-                            </div>
-                            
-                            <button type="button" id="submitBtn" class="submit-btn">
-                                🚀 Process with AI Engine
-                            </button>
-                        </div>
+            <!-- Status Messages -->
+            <div id="revenueLoading" class="loading" style="display: none;">
+                <div class="loading-content">
+                    <div class="loading-spinner"></div>
+                    <p>Generating dashboard...</p>
+                </div>
+            </div>
+            <div id="revenueError" class="error" style="display: none;"></div>
+            
+            <!-- Main Content Area -->
+            <div id="revenueContent" style="display: none;">
+                <div class="report-container">
+                    <!-- Comparison Tables Container -->
+                    <div class="tables-container">
+                        <!-- LYTD & LMTD Comparison -->
+                        <div id="accountStatusTable" class="comparison-section"></div>
+                        
+                        <!-- Revenue Report -->
+                        <div id="revenueTable" class="comparison-section"></div>
+                        
+                        <!-- Daywise Revenue -->
+                        <div id="daywiseRevenue" class="comparison-section"></div>
                     </div>
                     
-                    <!-- Right Panel: SINGLE TEMPLATE AUDIT -->
-                    <div class="classification-panel">
-                        <div class="panel-header">SINGLE TEMPLATE AUDIT</div>
-                        <div class="panel-content">
-                            <textarea class="single-input" id="singleMessage" placeholder="Enter your template message here for AI analysis..."></textarea>
-                            
-                            <div class="button-group">
-                                <button type="button" id="resetSingleBtn" class="action-btn secondary">
-                                    🔄 Reset
-                                </button>
-                                <button type="button" id="processSingleBtn" class="action-btn primary">
-                                    🤖 Analyze with AI
-                                </button>
-                            </div>
-                            
-                            <div id="singleResult" class="result-container">
-                                <div class="result-item">
-                                    <strong>Template Type:</strong> 
-                                    <span id="templateType">-</span>
-                                </div>
-                                <div class="result-item">
-                                    <strong>Confidence Score:</strong> 
-                                    <span id="confidenceScore">-</span>
-                                </div>
-                                <div class="result-item">
-                                    <strong>Variable Format:</strong> 
-                                    <span id="variableFormat">-</span>
-                                </div>
-                                <div class="result-item">
-                                    <strong>Classification Details:</strong> 
-                                    <span id="classificationDetails">-</span>
-                                </div>
-                            </div>
-                            
-                            <div class="instructions">
-                                <strong>🔍 Single Template Testing</strong><br>
-                                • Test individual messages with AI classification<br>
-                                • Get instant feedback on template type and confidence<br>
-                                • Validate variable placeholder formats<br>
-                                • Perfect for testing new templates before bulk processing
-                            </div>
-                        </div>
+                    <!-- Copy Report Button -->
+                    <div class="copy-section">
+                        <button id="copyRevenueReportBtn" class="copy-btn">
+                            📋 Copy Report
+                        </button>
                     </div>
                 </div>
             </div>
-
-            <!-- KYC Dashboard Page -->
-            <div class="page" id="dashboardPage" style="display:none;">
-                <div class="container">
-                    <div class="panel">
-                        <div class="dashboard-header">
-                            <h2>📊 Automated KYC Dashboard</h2>
-                            <button type="button" id="openKycUploadModal" class="upload-btn">
-                                📁 Upload Files
-                            </button>
-                        </div>
-                        
-                        <!-- KYC Stats Cards -->
-                        <div class="stats-container" id="kycStatsContainer" style="display: none;">
-                            <div class="stat-card">
-                                <div class="stat-number" id="totalReg">0</div>
-                                <div class="stat-label">Total Registered</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-number" id="totalPending">0</div>
-                                <div class="stat-label">Total Pending</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-number" id="totalApproved">0</div>
-                                <div class="stat-label">Total Approved</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-number" id="refundedCount">0</div>
-                                <div class="stat-label">Refunded</div>
-                            </div>
-                        </div>
-
-                        <!-- Dashboard Tables -->
-                        <div id="dashboardOutput"></div>
-                        
-                        <!-- Controls -->
-                        <div id="dashboardControls" style="text-align: center; margin-top: 20px; display: none;">
-                            <button type="button" onclick="copyDashboardToClipboard()" class="action-btn secondary">
-                                📋 Copy Report
-                            </button>
-                            <button type="button" onclick="exportExactDashboard()" class="action-btn primary">
-                                📊 Export to Excel
-                            </button>
-                        </div>
-                    </div>
+        </div>
+    </div>
+</div>
+        <!-- KYC Upload Modal -->
+        <div id="kycUploadModal" class="modal-overlay" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>📊 Upload KYC Dashboard Files</h3>
+                    <span class="close-modal" onclick="closeKycUploadModal()">&times;</span>
                 </div>
-            </div>
-
-            <!-- EKYC Summary Report Page -->
-            <div class="page" id="ekycReportPage" style="display:none;">
-                <div class="container">
-                    <div class="panel">
-                        <div class="dashboard-header">
-                            <h2>📋 Automated EKYC Summary </h2>
-                            <button type="button" id="openEkycUploadModal" class="upload-btn">
-                                📁 Upload Files
-                            </button>
-                        </div>
-                        
-                        <!-- EKYC Stats Cards -->
-                        <div class="stats-container" id="ekycStatsContainer" style="display: none;">
-                            <div class="stat-card">
-                                <div class="stat-number" id="totalPE">0</div>
-                                <div class="stat-label">Total PE</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-number" id="totalTM">0</div>
-                                <div class="stat-label">Total TM</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-number" id="totalTME">0</div>
-                                <div class="stat-label">Total TME</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-number" id="totalApprovedEkyc">0</div>
-                                <div class="stat-label">Total Approved</div>
-                            </div>
-                        </div>
-
-                        <!-- EKYC Tables -->
-                        <div id="ekycReportOutput"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- KYC Upload Modal -->
-            <div id="kycUploadModal" class="modal-overlay" style="display: none;">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3>📊 Upload KYC Dashboard Files</h3>
-                        <span class="close-modal" onclick="closeKycUploadModal()">&times;</span>
-                    </div>
-                    <div class="modal-body">
-                        <div class="upload-grid">
-                            <div class="upload-item">
-                                <h4>📋 Entities</h4>
-                                <div class="file-input-wrapper">
-                                    <input type="file" id="entitiesFileInput" accept=".xlsx,.xls,.csv" />
-                                    <label for="entitiesFileInput" class="file-input-label">Choose File</label>
+                <div class="modal-body">
+                    <div class="upload-grid">
+                        <div class="upload-item">
+                            <h4>📋 Entities</h4>
+                            <div class="file-drop-zone" id="entitiesDropZone">
+                                <div class="drop-area" id="entitiesDropArea">
+                                    <span class="drop-icon">📁</span>
+                                    <p>Drag & Drop your file here</p>
+                                    <p class="drop-subtitle">or</p>
+                                    <button type="button" class="browse-btn">Browse Files</button>
+                                    <input type="file" id="entitiesFileInput" accept=".xlsx,.xls,.csv" style="display: none;" />
                                 </div>
                                 <div id="entitiesStatus" class="file-status">No file selected</div>
                             </div>
-                            
-                            <div class="upload-item">
-                                <h4>📊 TM-Entities</h4>
-                                <div class="file-input-wrapper">
-                                    <input type="file" id="tmEntitiesFileInput" accept=".xlsx,.xls,.csv" />
-                                    <label for="tmEntitiesFileInput" class="file-input-label">Choose File</label>
+                        </div>
+                        
+                        <div class="upload-item">
+                            <h4>📊 TM-Entities</h4>
+                            <div class="file-drop-zone" id="tmEntitiesDropZone">
+                                <div class="drop-area" id="tmEntitiesDropArea">
+                                    <span class="drop-icon">📁</span>
+                                    <p>Drag & Drop your file here</p>
+                                    <p class="drop-subtitle">or</p>
+                                    <button type="button" class="browse-btn">Browse Files</button>
+                                    <input type="file" id="tmEntitiesFileInput" accept=".xlsx,.xls,.csv" style="display: none;" />
                                 </div>
                                 <div id="tmEntitiesStatus" class="file-status">No file selected</div>
                             </div>
-                            
-                            <div class="upload-item">
-                                <h4>⚙️ TMS</h4>
-                                <div class="file-input-wrapper">
-                                    <input type="file" id="tmsFileInput" accept=".xlsx,.xls,.csv" />
-                                    <label for="tmsFileInput" class="file-input-label">Choose File</label>
+                        </div>
+                        
+                        <div class="upload-item">
+                            <h4>⚙️ TMS</h4>
+                            <div class="file-drop-zone" id="tmsDropZone">
+                                <div class="drop-area" id="tmsDropArea">
+                                    <span class="drop-icon">📁</span>
+                                    <p>Drag & Drop your file here</p>
+                                    <p class="drop-subtitle">or</p>
+                                    <button type="button" class="browse-btn">Browse Files</button>
+                                    <input type="file" id="tmsFileInput" accept=".xlsx,.xls,.csv" style="display: none;" />
                                 </div>
                                 <div id="tmsStatus" class="file-status">No file selected</div>
                             </div>
+                        </div>
 
-                            <div class="upload-item">
-                                <h4>💰 Refunds</h4>
-                                <div class="file-input-wrapper">
-                                    <input type="file" id="refundsFileInput" accept=".xlsx,.xls,.csv" />
-                                    <label for="refundsFileInput" class="file-input-label">Choose File</label>
+                        <div class="upload-item">
+                            <h4>💰 Refunds</h4>
+                            <div class="file-drop-zone" id="refundsDropZone">
+                                <div class="drop-area" id="refundsDropArea">
+                                    <span class="drop-icon">📁</span>
+                                    <p>Drag & Drop your file here</p>
+                                    <p class="drop-subtitle">or</p>
+                                    <button type="button" class="browse-btn">Browse Files</button>
+                                    <input type="file" id="refundsFileInput" accept=".xlsx,.xls,.csv" style="display: none;" />
                                 </div>
                                 <div id="refundsStatus" class="file-status">No file selected</div>
                             </div>
                         </div>
-                        
-                        <div class="modal-actions">
-                            <button type="button" id="generateDashboardBtn" onclick="generateDashboardAndCloseModal()" class="generate-btn" disabled>
-                                📊 Generate Dashboard
-                            </button>
-                            <button type="button" onclick="closeKycUploadModal()" class="cancel-btn">
-                                Cancel
-                            </button>
-                            <div class="upload-instructions" id="uploadInstructions">
-                                Upload at least one file to generate dashboard
-                            </div>
-                        </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- EKYC Upload Modal -->
-            <div id="ekycUploadModal" class="modal-overlay" style="display: none;">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3>📋 Upload EKYC Report Files</h3>
-                        <span class="close-modal" onclick="closeEkycUploadModal()">&times;</span>
-                    </div>
-                    <div class="modal-body">
-                        <div class="upload-grid">
-                            <div class="upload-item">
-                                <h4>📋 Entities (PE)</h4>
-                                <div class="file-input-wrapper">
-                                    <input type="file" id="ekycEntitiesFileInput" accept=".xlsx,.xls,.csv" />
-                                    <label for="ekycEntitiesFileInput" class="file-input-label">Choose File</label>
-                                </div>
-                                <div id="ekycEntitiesStatus" class="file-status">No file selected</div>
-                            </div>
-                            
-                            <div class="upload-item">
-                                <h4>📊 TM</h4>
-                                <div class="file-input-wrapper">
-                                    <input type="file" id="ekycTmFileInput" accept=".xlsx,.xls,.csv" />
-                                    <label for="ekycTmFileInput" class="file-input-label">Choose File</label>
-                                </div>
-                                <div id="ekycTmStatus" class="file-status">No file selected</div>
-                            </div>
-                            
-                            <div class="upload-item">
-                                <h4>⚙️ TM-Entities (TME)</h4>
-                                <div class="file-input-wrapper">
-                                    <input type="file" id="ekycTmEntitiesFileInput" accept=".xlsx,.xls,.csv" />
-                                    <label for="ekycTmEntitiesFileInput" class="file-input-label">Choose File</label>
-                                </div>
-                                <div id="ekycTmEntitiesStatus" class="file-status">No file selected</div>
-                            </div>
-                        </div>
-                        
-                        <div class="modal-actions">
-                            <button type="button" id="generateEKYCReportBtn" onclick="generateEKYCReport()" class="generate-btn" disabled>
-                                📋 Generate EKYC Report
-                            </button>
-                            <button type="button" onclick="closeEkycUploadModal()" class="cancel-btn">
-                                Cancel
-                            </button>
-                            <div class="upload-instructions" id="ekycUploadInstructions">
-                                        Ready to generate report
-                            </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" id="generateDashboardBtn" onclick="generateDashboardAndCloseModal()" class="generate-btn" disabled>
+                            📊 Generate Dashboard
+                        </button>
+                        <button type="button" onclick="closeKycUploadModal()" class="cancel-btn">
+                            Cancel
+                        </button>
+                        <div class="upload-instructions" id="uploadInstructions">
+                            Upload at least one file to generate dashboard
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="output"></div>
+        <!-- EKYC Upload Modal -->
+        <div id="ekycUploadModal" class="modal-overlay" style="display: none;overflow-y: auto;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>📋 Upload EKYC Report Files</h3>
+                    <span class="close-modal" onclick="closeEkycUploadModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="upload-grid">
+                        <div class="upload-item">
+                            <h4>📋 Entities (PE)</h4>
+                            <div class="file-drop-zone" id="ekycEntitiesDropZone">
+                                <div class="drop-area" id="ekycEntitiesDropArea">
+                                    <span class="drop-icon">📁</span>
+                                    <p>Drag & Drop your file here</p>
+                                    <p class="drop-subtitle">or</p>
+                                    <button type="button" class="browse-btn">Browse Files</button>
+                                    <input type="file" id="ekycEntitiesFileInput" accept=".xlsx,.xls,.csv" style="display: none;" />
+                                </div>
+                                <div id="ekycEntitiesStatus" class="file-status">No file selected</div>
+                            </div>
+                        </div>
+                        
+                        <div class="upload-item">
+                            <h4>📊 TM</h4>
+                            <div class="file-drop-zone" id="ekycTmDropZone">
+                                <div class="drop-area" id="ekycTmDropArea">
+                                    <span class="drop-icon">📁</span>
+                                    <p>Drag & Drop your file here</p>
+                                    <p class="drop-subtitle">or</p>
+                                    <button type="button" class="browse-btn">Browse Files</button>
+                                    <input type="file" id="ekycTmFileInput" accept=".xlsx,.xls,.csv" style="display: none;" />
+                                </div>
+                                <div id="ekycTmStatus" class="file-status">No file selected</div>
+                            </div>
+                        </div>
+                        
+                        <div class="upload-item">
+                            <h4>⚙️ TM-Entities (TME)</h4>
+                            <div class="file-drop-zone" id="ekycTmEntitiesDropZone">
+                                <div class="drop-area" id="ekycTmEntitiesDropArea">
+                                    <span class="drop-icon">📁</span>
+                                    <p>Drag & Drop your file here</p>
+                                    <p class="drop-subtitle">or</p>
+                                    <button type="button" class="browse-btn">Browse Files</button>
+                                    <input type="file" id="ekycTmEntitiesFileInput" accept=".xlsx,.xls,.csv" style="display: none;" />
+                                </div>
+                                <div id="ekycTmEntitiesStatus" class="file-status">No file selected</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" id="generateEKYCReportBtn" onclick="generateEKYCReport()" class="generate-btn" disabled>
+                            📋 Generate EKYC Report
+                        </button>
+                        <button type="button" onclick="closeEkycUploadModal()" class="cancel-btn">
+                            Cancel
+                        </button>
+                        <div class="upload-instructions" id="ekycUploadInstructions">
+                            Ready to generate report
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue Upload Modal -->
+<div id="revenueUploadModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content compact-modal">
+        <div class="modal-header">
+            <h3>💰 Upload Revenue Dashboard Files</h3>
+            <span class="close-modal" onclick="closeRevenueUploadModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="file-upload-grid">
+                <div class="file-upload-item required">
+                    <h4>💰 VIL Payment Sheet *</h4>
+                    <div class="file-drop-zone" id="vilPaymentDropZone">
+                        <div class="drop-area" id="vilPaymentDropArea">
+                            <span class="drop-icon">📁</span>
+                            <p>Drag & Drop your file here</p>
+                            <p class="drop-subtitle">or</p>
+                            <button type="button" class="browse-btn">Browse Files</button>
+                            <input type="file" id="vilPaymentFileInput" accept=".xlsx,.xls,.csv" style="display: none;" />
+                        </div>
+                        <div id="vilPaymentStatus" class="file-status">No file selected</div>
+                    </div>
+                </div>
+                
+                <div class="file-upload-item">
+                    <h4>📋 Entity Sheet (PE)</h4>
+                    <div class="file-drop-zone" id="entitySheetDropZone">
+                        <div class="drop-area" id="entitySheetDropArea">
+                            <span class="drop-icon">📁</span>
+                            <p>Drag & Drop your file here</p>
+                            <p class="drop-subtitle">or</p>
+                            <button type="button" class="browse-btn">Browse Files</button>
+                            <input type="file" id="entitySheetFileInput" accept=".xlsx,.xls,.csv" style="display: none;" />
+                        </div>
+                        <div id="entitySheetStatus" class="file-status">No file selected</div>
+                    </div>
+                </div>
+                
+                <div class="file-upload-item">
+                    <h4>📊 TM Sheet</h4>
+                    <div class="file-drop-zone" id="tmSheetDropZone">
+                        <div class="drop-area" id="tmSheetDropArea">
+                            <span class="drop-icon">📁</span>
+                            <p>Drag & Drop your file here</p>
+                            <p class="drop-subtitle">or</p>
+                            <button type="button" class="browse-btn">Browse Files</button>
+                            <input type="file" id="tmSheetFileInput" accept=".xlsx,.xls,.csv" style="display: none;" />
+                        </div>
+                        <div id="tmSheetStatus" class="file-status">No file selected</div>
+                    </div>
+                </div>
+
+                <div class="file-upload-item">
+                    <h4>⚙️ TM-E Sheet</h4>
+                    <div class="file-drop-zone" id="tmeSheetDropZone">
+                        <div class="drop-area" id="tmeSheetDropArea">
+                            <span class="drop-icon">📁</span>
+                            <p>Drag & Drop your file here</p>
+                            <p class="drop-subtitle">or</p>
+                            <button type="button" class="browse-btn">Browse Files</button>
+                            <input type="file" id="tmeSheetFileInput" accept=".xlsx,.xls,.csv" style="display: none;" />
+                        </div>
+                        <div id="tmeSheetStatus" class="file-status">No file selected</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-actions compact">
+                <button type="button" id="generateRevenueDashboardBtn" onclick="generateRevenueDashboard()" 
+                        class="generate-btn" disabled>
+                    📊 Generate Revenue Dashboard
+                </button>
+                <button type="button" onclick="closeRevenueUploadModal()" class="cancel-btn">
+                    Cancel
+                </button>
+                <div class="upload-instructions" id="revenueUploadInstructions">
+                    * VIL Payment sheet is required along with at least one other sheet
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+    <!-- JavaScript -->
+    <script src="Main_app.js"></script>
+    <script src="Classification.js"></script>
+    <script src="dashboard.js"></script>
+    <script src="Ekyc_Summary.js"></script>
+    <script src="revenue.js"></script>
+
+    <script>
+        // Direct initialization for revenue dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded - initializing revenue dashboard globals');
+            
+            // Setup revenue dashboard when navigating to it
+            const revenueNav = document.getElementById('revenueDashboardNav');
+            if (revenueNav) {
+                revenueNav.addEventListener('click', function() {
+                    setTimeout(function() {
+                        if (typeof setupRevenueDashboardEventListeners === 'function') {
+                            setupRevenueDashboardEventListeners();
+                        }
+                    }, 100);
+                });
+            }
+            
+            // Also setup if we're already on revenue dashboard page
+            if (document.getElementById('revenueDashboardPage') && 
+                document.getElementById('revenueDashboardPage').style.display === 'block') {
+                setTimeout(function() {
+                    if (typeof setupRevenueDashboardEventListeners === 'function') {
+                        setupRevenueDashboardEventListeners();
+                    }
+                }, 500);
+            }
+            
+            // Initialize drag and drop functionality for all modals
+            initializeDragAndDrop();
+        });
+
+        // Initialize drag and drop functionality
+        function initializeDragAndDrop() {
+            // KYC Modal
+            setupDragAndDrop('entitiesDropArea', 'entitiesFileInput', 'entitiesStatus');
+            setupDragAndDrop('tmEntitiesDropArea', 'tmEntitiesFileInput', 'tmEntitiesStatus');
+            setupDragAndDrop('tmsDropArea', 'tmsFileInput', 'tmsStatus');
+            setupDragAndDrop('refundsDropArea', 'refundsFileInput', 'refundsStatus');
+            
+            // EKYC Modal
+            setupDragAndDrop('ekycEntitiesDropArea', 'ekycEntitiesFileInput', 'ekycEntitiesStatus');
+            setupDragAndDrop('ekycTmDropArea', 'ekycTmFileInput', 'ekycTmStatus');
+            setupDragAndDrop('ekycTmEntitiesDropArea', 'ekycTmEntitiesFileInput', 'ekycTmEntitiesStatus');
+            
+            // Revenue Modal
+            setupDragAndDrop('vilPaymentDropArea', 'vilPaymentFileInput', 'vilPaymentStatus');
+            setupDragAndDrop('entitySheetDropArea', 'entitySheetFileInput', 'entitySheetStatus');
+            setupDragAndDrop('tmSheetDropArea', 'tmSheetFileInput', 'tmSheetStatus');
+            setupDragAndDrop('tmeSheetDropArea', 'tmeSheetFileInput', 'tmeSheetStatus');
+        }
+
+        // Setup drag and drop for a specific drop area
+        function setupDragAndDrop(dropAreaId, fileInputId, statusId) {
+            const dropArea = document.getElementById(dropAreaId);
+            const fileInput = document.getElementById(fileInputId);
+            const statusElement = document.getElementById(statusId);
+            
+            if (!dropArea || !fileInput || !statusElement) return;
+            
+            // Add click event to browse button
+            const browseBtn = dropArea.querySelector('.browse-btn');
+            if (browseBtn) {
+                browseBtn.addEventListener('click', () => {
+                    fileInput.click();
+                });
+            }
+            
+            // Handle file selection via input
+            fileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    updateFileStatus(this.files[0], statusElement);
+                }
+            });
+            
+            // Prevent default drag behaviors
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+                document.body.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            // Highlight drop area when item is dragged over it
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            // Handle dropped files
+            dropArea.addEventListener('drop', handleDrop, false);
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            function highlight() {
+                dropArea.classList.add('highlight');
+            }
+            
+            function unhighlight() {
+                dropArea.classList.remove('highlight');
+            }
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    updateFileStatus(files[0], statusElement);
+                }
+                
+                unhighlight();
+            }
+        }
         
-        <!-- JavaScript -->
-        <script src="Main_app.js"></script>
-        <script src="Classification.js"></script>
-        <script src="dashboard.js"></script>
-        <script src="Ekyc_Summary.js"></script>
-    </body>
-    </html>
+        function updateFileStatus(file, statusElement) {
+            statusElement.textContent = file.name;
+            statusElement.style.color = '#27ae60';
+            
+            // Check if we need to enable generate buttons
+            checkGenerateButtons();
+        }
+        
+        function checkGenerateButtons() {
+            // KYC Modal
+            const kycFiles = [
+                document.getElementById('entitiesFileInput'),
+                document.getElementById('tmEntitiesFileInput'),
+                document.getElementById('tmsFileInput'),
+                document.getElementById('refundsFileInput')
+            ];
+            
+            const kycBtn = document.getElementById('generateDashboardBtn');
+            if (kycBtn) {
+                kycBtn.disabled = !kycFiles.some(file => file.files.length > 0);
+            }
+            
+            // EKYC Modal
+            const ekycFiles = [
+                document.getElementById('ekycEntitiesFileInput'),
+                document.getElementById('ekycTmFileInput'),
+                document.getElementById('ekycTmEntitiesFileInput')
+            ];
+            
+            const ekycBtn = document.getElementById('generateEKYCReportBtn');
+            if (ekycBtn) {
+                ekycBtn.disabled = !ekycFiles.some(file => file.files.length > 0);
+            }
+            
+            // Revenue Modal
+            const revenueFiles = [
+                document.getElementById('vilPaymentFileInput'),
+                document.getElementById('entitySheetFileInput'),
+                document.getElementById('tmSheetFileInput'),
+                document.getElementById('tmeSheetFileInput')
+            ];
+            
+            const revenueBtn = document.getElementById('generateRevenueDashboardBtn');
+            if (revenueBtn) {
+                const vilPaymentFile = revenueFiles[0].files.length > 0;
+                const otherFiles = revenueFiles.slice(1).some(file => file.files.length > 0);
+                revenueBtn.disabled = !(vilPaymentFile && otherFiles);
+            }
+        }
+    </script>
+</body>
+</html>
